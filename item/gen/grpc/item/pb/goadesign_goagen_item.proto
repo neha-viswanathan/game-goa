@@ -1,0 +1,145 @@
+// Code generated with goa v3.11.2, DO NOT EDIT.
+//
+// Item protocol buffer definition
+//
+// Command:
+// $ goa gen item/design
+
+syntax = "proto3";
+
+package item;
+
+option go_package = "/itempb";
+
+// The item service performs CRUD operations on a item
+service Item {
+	// Create a new item
+	rpc CreateItem (CreateItemRequest) returns (CreateItemResponse);
+	// Get an item by name
+	rpc GetItem (GetItemRequest) returns (GetItemResponse);
+	// List all items
+	rpc ListItems (ListItemsRequest) returns (ListItemsResponse);
+	// Update a given item
+	rpc UpdateItem (UpdateItemRequest) returns (UpdateItemResponse);
+	// Delete a given item
+	rpc DeleteItem (DeleteItemRequest) returns (DeleteItemResponse);
+}
+
+message CreateItemItemAlreadyExistsError {
+	// item already exists
+	string message_ = 1;
+	// item name
+	string name = 2;
+}
+
+message CreateItemRequest {
+	// Name, which is a unique identifier
+	string name = 1;
+	// Description
+	string description = 2;
+	// Amount of damage
+	optional uint32 damage = 3;
+	// Amount of healing
+	optional uint32 healing = 4;
+	// Amount of protection
+	optional uint32 protection = 5;
+}
+
+message CreateItemResponse {
+	// Name, which is a unique identifier
+	string name = 1;
+	// Description
+	string description = 2;
+	// Amount of damage
+	optional uint32 damage = 3;
+	// Amount of healing
+	optional uint32 healing = 4;
+	// Amount of protection
+	optional uint32 protection = 5;
+}
+
+message GetItemItemNotFoundError {
+	// item not found
+	string message_ = 1;
+	// item name
+	string name = 2;
+}
+
+message GetItemRequest {
+	// name of item to be retrieved
+	string name = 1;
+}
+
+message GetItemResponse {
+	// Name, which is a unique identifier
+	string name = 1;
+	// Description
+	string description = 2;
+	// Amount of damage
+	optional uint32 damage = 3;
+	// Amount of healing
+	optional uint32 healing = 4;
+	// Amount of protection
+	optional uint32 protection = 5;
+}
+
+message ListItemsRequest {
+}
+
+message ListItemsResponse {
+	repeated Item2 field = 1;
+}
+// Attributes of the item
+message Item2 {
+	// Name, which is a unique identifier
+	string name = 1;
+	// Description
+	string description = 2;
+	// Amount of damage
+	optional uint32 damage = 3;
+	// Amount of healing
+	optional uint32 healing = 4;
+	// Amount of protection
+	optional uint32 protection = 5;
+}
+
+message UpdateItemItemNotFoundError {
+	// item not found
+	string message_ = 1;
+	// item name
+	string name = 2;
+}
+
+message UpdateItemRequest {
+	// Name, which is a unique identifier
+	string name = 1;
+	// Description
+	string description = 2;
+	// Amount of damage
+	optional uint32 damage = 3;
+	// Amount of healing
+	optional uint32 healing = 4;
+	// Amount of protection
+	optional uint32 protection = 5;
+}
+
+message UpdateItemResponse {
+	// Name, which is a unique identifier
+	string name = 1;
+	// Description
+	string description = 2;
+	// Amount of damage
+	optional uint32 damage = 3;
+	// Amount of healing
+	optional uint32 healing = 4;
+	// Amount of protection
+	optional uint32 protection = 5;
+}
+
+message DeleteItemRequest {
+	// name of item to be deleted
+	string name = 1;
+}
+
+message DeleteItemResponse {
+}

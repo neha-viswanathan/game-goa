@@ -1,0 +1,11 @@
+.DS_Store
+*.iml
+.idea/
+!/character/character
+!/character/character-cli
+!/front/front
+!/front/front-cli
+!/inventory/inventory
+!/inventory/inventory-cli
+!/item/item
+!/item/item-cli

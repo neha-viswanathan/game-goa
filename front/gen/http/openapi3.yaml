@@ -1,0 +1,630 @@
+openapi: 3.0.3
+info:
+    title: Front Service
+    description: An HTTP service for accessing the backend services of a multiplayer game
+    version: "1.0"
+servers:
+    - url: http://localhost:8000
+paths:
+    /api/character:
+        get:
+            tags:
+                - Front
+            summary: listCharacters Front
+            description: List all characters
+            operationId: Front#listCharacters
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/CreateCharacterRequestBody'
+                                example:
+                                    - description: Savior of Princess Zelda
+                                      experience: 2029508
+                                      health: 1800536
+                                      name: Link
+                                    - description: Savior of Princess Zelda
+                                      experience: 2029508
+                                      health: 1800536
+                                      name: Link
+                            example:
+                                - description: Savior of Princess Zelda
+                                  experience: 2029508
+                                  health: 1800536
+                                  name: Link
+                                - description: Savior of Princess Zelda
+                                  experience: 2029508
+                                  health: 1800536
+                                  name: Link
+        post:
+            tags:
+                - Front
+            summary: createCharacter Front
+            description: Create a new character
+            operationId: Front#createCharacter
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateCharacterRequestBody'
+                        example:
+                            description: Savior of Princess Zelda
+                            experience: 3453331
+                            health: 6413167
+                            name: Link
+            responses:
+                "201":
+                    description: Created response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateCharacterRequestBody'
+                            example:
+                                description: Savior of Princess Zelda
+                                experience: 3350049
+                                health: 6122903
+                                name: Link
+                "409":
+                    description: 'CharacterAlreadyExists: character already exists'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CharacterAlreadyExists'
+    /api/character/{name}:
+        delete:
+            tags:
+                - Front
+            summary: deleteCharacter Front
+            description: Delete a given character
+            operationId: Front#deleteCharacter
+            parameters:
+                - name: name
+                  in: path
+                  description: name of character to be deleted
+                  required: true
+                  schema:
+                    type: string
+                    description: name of character to be deleted
+                    example: Minima ut dolor in rerum.
+                  example: Laboriosam amet at.
+            responses:
+                "200":
+                    description: OK response.
+        get:
+            tags:
+                - Front
+            summary: getCharacter Front
+            description: Get a character by name
+            operationId: Front#getCharacter
+            parameters:
+                - name: name
+                  in: path
+                  description: name of character to be retrieved
+                  required: true
+                  schema:
+                    type: string
+                    description: name of character to be retrieved
+                    example: Rerum nihil aut ducimus.
+                  example: Nemo rerum.
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateCharacterRequestBody'
+                            example:
+                                description: Savior of Princess Zelda
+                                experience: 3922357
+                                health: 6657167
+                                name: Link
+                "404":
+                    description: 'CharacterNotFound: character not found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CharacterAlreadyExists'
+        put:
+            tags:
+                - Front
+            summary: updateCharacter Front
+            description: Update a given character
+            operationId: Front#updateCharacter
+            parameters:
+                - name: name
+                  in: path
+                  description: Name, which is a unique identifier
+                  required: true
+                  schema:
+                    type: string
+                    description: Name, which is a unique identifier
+                    example: Link
+                    maxLength: 32
+                  example: Link
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateCharacterRequestBody'
+                        example:
+                            description: Savior of Princess Zelda
+                            experience: 1616326
+                            health: 1962451
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateCharacterRequestBody'
+                            example:
+                                description: Savior of Princess Zelda
+                                experience: 1625059
+                                health: 7322347
+                                name: Link
+                "404":
+                    description: 'CharacterNotFound: character not found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CharacterAlreadyExists'
+    /api/inventory/{character}:
+        get:
+            tags:
+                - Front
+            summary: getInventory Front
+            description: Get a character's inventory
+            operationId: Front#getInventory
+            parameters:
+                - name: character
+                  in: path
+                  description: name of character
+                  required: true
+                  schema:
+                    type: string
+                    description: name of character
+                    example: Quidem quod id natus assumenda voluptates.
+                  example: Aliquid ex laudantium.
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                                    example: Officiis aut quisquam consequatur sed et qui.
+                                example:
+                                    - Rerum quisquam voluptates et voluptas dolor porro.
+                                    - Doloremque quis nihil amet.
+                            example:
+                                - Odit dignissimos modi sint nihil harum.
+                                - Illo repudiandae quo non.
+                "404":
+                    description: 'CharacterNotFound: character not found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CharacterAlreadyExists'
+    /api/inventory/{character}/{item}:
+        delete:
+            tags:
+                - Front
+            summary: removeInventoryItem Front
+            description: Remove an item from a character's inventory
+            operationId: Front#removeInventoryItem
+            parameters:
+                - name: character
+                  in: path
+                  description: character's name
+                  required: true
+                  schema:
+                    type: string
+                    description: character's name
+                    example: Velit atque beatae rerum et molestiae.
+                  example: Fuga autem inventore recusandae corrupti.
+                - name: item
+                  in: path
+                  description: item's name
+                  required: true
+                  schema:
+                    type: string
+                    description: item's name
+                    example: Fugit dignissimos id dolores veniam eligendi nulla.
+                  example: Soluta odio pariatur nihil quos nisi.
+            responses:
+                "200":
+                    description: OK response.
+                "404":
+                    description: 'CharacterNotFound: character not found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CharacterAlreadyExists'
+        post:
+            tags:
+                - Front
+            summary: addInventoryItem Front
+            description: Add an item to a character's inventory
+            operationId: Front#addInventoryItem
+            parameters:
+                - name: character
+                  in: path
+                  description: character's name
+                  required: true
+                  schema:
+                    type: string
+                    description: character's name
+                    example: Voluptate vitae vel temporibus expedita cumque iure.
+                  example: Omnis maxime optio quo sed.
+                - name: item
+                  in: path
+                  description: item's name
+                  required: true
+                  schema:
+                    type: string
+                    description: item's name
+                    example: Praesentium laudantium.
+                  example: Facilis in et sed quisquam deleniti.
+            responses:
+                "200":
+                    description: OK response.
+                "404":
+                    description: 'ItemNotFound: item not found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CharacterAlreadyExists'
+    /api/item:
+        get:
+            tags:
+                - Front
+            summary: listItems Front
+            description: List all items
+            operationId: Front#listItems
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/CreateItemRequestBody'
+                                example:
+                                    - damage: 781823
+                                      description: Restores health
+                                      healing: 673915
+                                      name: Potion
+                                      protection: 5047
+                                    - damage: 781823
+                                      description: Restores health
+                                      healing: 673915
+                                      name: Potion
+                                      protection: 5047
+                                    - damage: 781823
+                                      description: Restores health
+                                      healing: 673915
+                                      name: Potion
+                                      protection: 5047
+                            example:
+                                - damage: 781823
+                                  description: Restores health
+                                  healing: 673915
+                                  name: Potion
+                                  protection: 5047
+                                - damage: 781823
+                                  description: Restores health
+                                  healing: 673915
+                                  name: Potion
+                                  protection: 5047
+        post:
+            tags:
+                - Front
+            summary: createItem Front
+            description: Create a new item
+            operationId: Front#createItem
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateItemRequestBody'
+                        example:
+                            damage: 308475
+                            description: Restores health
+                            healing: 363332
+                            name: Potion
+                            protection: 6450
+            responses:
+                "201":
+                    description: Created response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateItemRequestBody'
+                            example:
+                                damage: 683067
+                                description: Restores health
+                                healing: 687438
+                                name: Potion
+                                protection: 9422
+                "409":
+                    description: 'ItemAlreadyExists: item already exists'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CharacterAlreadyExists'
+    /api/item/{name}:
+        delete:
+            tags:
+                - Front
+            summary: deleteItem Front
+            description: Delete a given item
+            operationId: Front#deleteItem
+            parameters:
+                - name: name
+                  in: path
+                  description: name of item to be deleted
+                  required: true
+                  schema:
+                    type: string
+                    description: name of item to be deleted
+                    example: Dolorem enim dolores.
+                  example: Et ut beatae dolore.
+            responses:
+                "200":
+                    description: OK response.
+        get:
+            tags:
+                - Front
+            summary: getItem Front
+            description: Get an item by name
+            operationId: Front#getItem
+            parameters:
+                - name: name
+                  in: path
+                  description: name of item to be retrieved
+                  required: true
+                  schema:
+                    type: string
+                    description: name of item to be retrieved
+                    example: Repellendus pariatur et exercitationem in.
+                  example: Atque amet est.
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateItemRequestBody'
+                            example:
+                                damage: 383204
+                                description: Restores health
+                                healing: 97911
+                                name: Potion
+                                protection: 6367
+                "404":
+                    description: 'ItemNotFound: item not found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CharacterAlreadyExists'
+        put:
+            tags:
+                - Front
+            summary: updateItem Front
+            description: Update a given item
+            operationId: Front#updateItem
+            parameters:
+                - name: name
+                  in: path
+                  description: Name, which is a unique identifier
+                  required: true
+                  schema:
+                    type: string
+                    description: Name, which is a unique identifier
+                    example: Potion
+                    maxLength: 32
+                  example: Potion
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateItemRequestBody'
+                        example:
+                            damage: 797739
+                            description: Restores health
+                            healing: 473315
+                            protection: 7220
+            responses:
+                "200":
+                    description: OK response.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateItemRequestBody'
+                            example:
+                                damage: 953635
+                                description: Restores health
+                                healing: 972392
+                                name: Potion
+                                protection: 2768
+                "404":
+                    description: 'ItemNotFound: item not found'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CharacterAlreadyExists'
+components:
+    schemas:
+        CharacterAlreadyExists:
+            type: object
+            properties:
+                message:
+                    type: string
+                    description: character already exists
+                    example: Quia nobis assumenda et rerum ipsum.
+                name:
+                    type: string
+                    description: character name
+                    example: Consequuntur fugit a veritatis aut.
+            description: character already exists
+            example:
+                message: Sint eaque doloribus ut amet.
+                name: Et tempore maiores tempora et.
+            required:
+                - message
+                - name
+        CreateCharacterRequestBody:
+            type: object
+            properties:
+                description:
+                    type: string
+                    description: Description
+                    default: ""
+                    example: Savior of Princess Zelda
+                    maxLength: 128
+                experience:
+                    type: integer
+                    description: Amount of experience
+                    default: 0
+                    example: 2711456
+                    minimum: 0
+                    maximum: 1e+07
+                health:
+                    type: integer
+                    description: Current health
+                    default: 100
+                    example: 6654689
+                    minimum: 0
+                    maximum: 1e+07
+                name:
+                    type: string
+                    description: Name, which is a unique identifier
+                    example: Link
+                    maxLength: 32
+            example:
+                description: Savior of Princess Zelda
+                experience: 8296950
+                health: 3737971
+                name: Link
+            required:
+                - name
+        CreateItemRequestBody:
+            type: object
+            properties:
+                damage:
+                    type: integer
+                    description: Amount of damage
+                    default: 0
+                    example: 534059
+                    minimum: 0
+                    maximum: 1e+06
+                description:
+                    type: string
+                    description: Description
+                    example: Restores health
+                    maxLength: 128
+                healing:
+                    type: integer
+                    description: Amount of healing
+                    default: 0
+                    example: 102150
+                    minimum: 0
+                    maximum: 1e+06
+                name:
+                    type: string
+                    description: Name, which is a unique identifier
+                    example: Potion
+                    maxLength: 32
+                protection:
+                    type: integer
+                    description: Amount of protection
+                    default: 0
+                    example: 4004
+                    minimum: 0
+                    maximum: 10000
+            example:
+                damage: 735714
+                description: Restores health
+                healing: 83681
+                name: Potion
+                protection: 1826
+            required:
+                - name
+                - description
+        UpdateCharacterRequestBody:
+            type: object
+            properties:
+                description:
+                    type: string
+                    description: Description
+                    default: ""
+                    example: Savior of Princess Zelda
+                    maxLength: 128
+                experience:
+                    type: integer
+                    description: Amount of experience
+                    default: 0
+                    example: 5415889
+                    minimum: 0
+                    maximum: 1e+07
+                health:
+                    type: integer
+                    description: Current health
+                    default: 100
+                    example: 3197058
+                    minimum: 0
+                    maximum: 1e+07
+            example:
+                description: Savior of Princess Zelda
+                experience: 3235313
+                health: 8717914
+        UpdateItemRequestBody:
+            type: object
+            properties:
+                damage:
+                    type: integer
+                    description: Amount of damage
+                    default: 0
+                    example: 590776
+                    minimum: 0
+                    maximum: 1e+06
+                description:
+                    type: string
+                    description: Description
+                    example: Restores health
+                    maxLength: 128
+                healing:
+                    type: integer
+                    description: Amount of healing
+                    default: 0
+                    example: 23248
+                    minimum: 0
+                    maximum: 1e+06
+                protection:
+                    type: integer
+                    description: Amount of protection
+                    default: 0
+                    example: 8391
+                    minimum: 0
+                    maximum: 10000
+            example:
+                damage: 986385
+                description: Restores health
+                healing: 47955
+                protection: 3250
+            required:
+                - description
+tags:
+    - name: Front
+      description: The front service is the consumer facing API. It proxies the call to the backend services.

@@ -1,0 +1,79 @@
+// Code generated with goa v3.11.2, DO NOT EDIT.
+//
+// Inventory protocol buffer definition
+//
+// Command:
+// $ goa gen inventory/design
+
+syntax = "proto3";
+
+package inventory;
+
+option go_package = "/inventorypb";
+
+// The inventory service performs CRUD operations on a character's inventory
+service Inventory {
+	// Add an item to a character's inventory
+	rpc AddItem (AddItemRequest) returns (AddItemResponse);
+	// Remove an item from a character's inventory
+	rpc RemoveItem (RemoveItemRequest) returns (RemoveItemResponse);
+	// Get a character's inventory
+	rpc GetInventory (GetInventoryRequest) returns (GetInventoryResponse);
+}
+
+message AddItemCharacterNotFoundError {
+	// character not found
+	string message_ = 1;
+	// character name
+	string name = 2;
+}
+
+message AddItemItemNotFoundError {
+	// item not found
+	string message_ = 1;
+	// item name
+	string name = 2;
+}
+
+message AddItemRequest {
+	// character's name
+	string character = 1;
+	// item's name
+	string item = 2;
+}
+
+message AddItemResponse {
+}
+
+message RemoveItemCharacterNotFoundError {
+	// character not found
+	string message_ = 1;
+	// character name
+	string name = 2;
+}
+
+message RemoveItemRequest {
+	// character's name
+	string character = 1;
+	// item's name
+	string item = 2;
+}
+
+message RemoveItemResponse {
+}
+
+message GetInventoryCharacterNotFoundError {
+	// character not found
+	string message_ = 1;
+	// character name
+	string name = 2;
+}
+
+message GetInventoryRequest {
+	// name of character
+	string character = 1;
+}
+
+message GetInventoryResponse {
+	repeated string field = 1;
+}

@@ -1,0 +1,133 @@
+// Code generated with goa v3.11.2, DO NOT EDIT.
+//
+// Character protocol buffer definition
+//
+// Command:
+// $ goa gen character/design
+
+syntax = "proto3";
+
+package character;
+
+option go_package = "/characterpb";
+
+// The character service performs CRUD operations on a character
+service Character {
+	// Create a new character
+	rpc CreateCharacter (CreateCharacterRequest) returns (CreateCharacterResponse);
+	// Get a character by name
+	rpc GetCharacter (GetCharacterRequest) returns (GetCharacterResponse);
+	// List all characters
+	rpc ListCharacters (ListCharactersRequest) returns (ListCharactersResponse);
+	// Update a given character
+	rpc UpdateCharacter (UpdateCharacterRequest) returns (UpdateCharacterResponse);
+	// Delete a given character
+	rpc DeleteCharacter (DeleteCharacterRequest) returns (DeleteCharacterResponse);
+}
+
+message CreateCharacterCharacterAlreadyExistsError {
+	// character already exists
+	string message_ = 1;
+	// character name
+	string name = 2;
+}
+
+message CreateCharacterRequest {
+	// Name, which is a unique identifier
+	string name = 1;
+	// Description
+	optional string description = 2;
+	// Current health
+	optional uint32 health = 3;
+	// Amount of experience
+	optional uint32 experience = 4;
+}
+
+message CreateCharacterResponse {
+	// Name, which is a unique identifier
+	string name = 1;
+	// Description
+	optional string description = 2;
+	// Current health
+	optional uint32 health = 3;
+	// Amount of experience
+	optional uint32 experience = 4;
+}
+
+message GetCharacterCharacterNotFoundError {
+	// character not found
+	string message_ = 1;
+	// character name
+	string name = 2;
+}
+
+message GetCharacterRequest {
+	// name of character to be retrieved
+	string name = 1;
+}
+
+message GetCharacterResponse {
+	// Name, which is a unique identifier
+	string name = 1;
+	// Description
+	optional string description = 2;
+	// Current health
+	optional uint32 health = 3;
+	// Amount of experience
+	optional uint32 experience = 4;
+}
+
+message ListCharactersRequest {
+}
+
+message ListCharactersResponse {
+	repeated Character2 field = 1;
+}
+// Attributes of the character
+message Character2 {
+	// Name, which is a unique identifier
+	string name = 1;
+	// Description
+	optional string description = 2;
+	// Current health
+	optional uint32 health = 3;
+	// Amount of experience
+	optional uint32 experience = 4;
+}
+
+message UpdateCharacterCharacterNotFoundError {
+	// character not found
+	string message_ = 1;
+	// character name
+	string name = 2;
+}
+
+message UpdateCharacterRequest {
+	// Name, which is a unique identifier
+	string name = 1;
+	// Description
+	optional string description = 2;
+	// Current health
+	optional uint32 health = 3;
+	// Amount of experience
+	optional uint32 experience = 4;
+}
+
+message UpdateCharacterResponse {
+	// Name, which is a unique identifier
+	string name = 1;
+	// Description
+	optional string description = 2;
+	// Current health
+	optional uint32 health = 3;
+	// Amount of experience
+	optional uint32 experience = 4;
+}
+
+message DeleteCharacterRequest {
+	// name of character to be deleted
+	string name = 1;
+}
+
+message DeleteCharacterResponse {
+}

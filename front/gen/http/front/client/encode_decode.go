@@ -808,12 +808,29 @@ func (c *Client) BuildAddInventoryItemRequest(ctx context.Context, v interface{}
 	return req, nil
 }
 
+// EncodeAddInventoryItemRequest returns an encoder for requests sent to the
+// Front addInventoryItem server.
+func EncodeAddInventoryItemRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*front.AddInventoryItemPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("Front", "addInventoryItem", "*front.AddInventoryItemPayload", v)
+		}
+		body := NewAddInventoryItemRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("Front", "addInventoryItem", err)
+		}
+		return nil
+	}
+}
+
 // DecodeAddInventoryItemResponse returns a decoder for responses returned by
 // the Front addInventoryItem endpoint. restoreBody controls whether the
 // response body should be restored after having been read.
 // DecodeAddInventoryItemResponse may return the following errors:
 //   - "CharacterNotFound" (type *front.CharacterNotFound): http.StatusNotFound
 //   - "ItemNotFound" (type *front.ItemNotFound): http.StatusNotFound
+//   - "ItemCountNotValid" (type *front.ItemCountNotValid): http.StatusBadRequest
 //   - error: internal error
 func DecodeAddInventoryItemResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
@@ -867,6 +884,20 @@ func DecodeAddInventoryItemResponse(decoder func(*http.Response) goahttp.Decoder
 				body, _ := io.ReadAll(resp.Body)
 				return nil, goahttp.ErrInvalidResponse("Front", "addInventoryItem", resp.StatusCode, string(body))
 			}
+		case http.StatusBadRequest:
+			var (
+				body AddInventoryItemItemCountNotValidResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("Front", "addInventoryItem", err)
+			}
+			err = ValidateAddInventoryItemItemCountNotValidResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("Front", "addInventoryItem", err)
+			}
+			return nil, NewAddInventoryItemItemCountNotValid(&body)
 		default:
 			body, _ := io.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("Front", "addInventoryItem", resp.StatusCode, string(body))
@@ -902,11 +933,28 @@ func (c *Client) BuildRemoveInventoryItemRequest(ctx context.Context, v interfac
 	return req, nil
 }
 
+// EncodeRemoveInventoryItemRequest returns an encoder for requests sent to the
+// Front removeInventoryItem server.
+func EncodeRemoveInventoryItemRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*front.RemoveInventoryItemPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("Front", "removeInventoryItem", "*front.RemoveInventoryItemPayload", v)
+		}
+		body := NewRemoveInventoryItemRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("Front", "removeInventoryItem", err)
+		}
+		return nil
+	}
+}
+
 // DecodeRemoveInventoryItemResponse returns a decoder for responses returned
 // by the Front removeInventoryItem endpoint. restoreBody controls whether the
 // response body should be restored after having been read.
 // DecodeRemoveInventoryItemResponse may return the following errors:
 //   - "CharacterNotFound" (type *front.CharacterNotFound): http.StatusNotFound
+//   - "ItemCountNotValid" (type *front.ItemCountNotValid): http.StatusBadRequest
 //   - error: internal error
 func DecodeRemoveInventoryItemResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
@@ -939,6 +987,20 @@ func DecodeRemoveInventoryItemResponse(decoder func(*http.Response) goahttp.Deco
 				return nil, goahttp.ErrValidationError("Front", "removeInventoryItem", err)
 			}
 			return nil, NewRemoveInventoryItemCharacterNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body RemoveInventoryItemItemCountNotValidResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("Front", "removeInventoryItem", err)
+			}
+			err = ValidateRemoveInventoryItemItemCountNotValidResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("Front", "removeInventoryItem", err)
+			}
+			return nil, NewRemoveInventoryItemItemCountNotValid(&body)
 		default:
 			body, _ := io.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("Front", "removeInventoryItem", resp.StatusCode, string(body))
@@ -994,14 +1056,25 @@ func DecodeGetInventoryResponse(decoder func(*http.Response) goahttp.Decoder, re
 		switch resp.StatusCode {
 		case http.StatusOK:
 			var (
-				body []string
+				body GetInventoryResponseBody
 				err  error
 			)
 			err = decoder(resp).Decode(&body)
 			if err != nil {
 				return nil, goahttp.ErrDecodingError("Front", "getInventory", err)
 			}
-			return body, nil
+			for _, e := range body {
+				if e != nil {
+					if err2 := ValidateInventoryEntryResponse(e); err2 != nil {
+						err = goa.MergeErrors(err, err2)
+					}
+				}
+			}
+			if err != nil {
+				return nil, goahttp.ErrValidationError("Front", "getInventory", err)
+			}
+			res := NewGetInventoryInventoryEntryOK(body)
+			return res, nil
 		case http.StatusNotFound:
 			var (
 				body GetInventoryCharacterNotFoundResponseBody
@@ -1075,6 +1148,17 @@ func unmarshalItemResponseToFrontItem(v *ItemResponse) *front.Item {
 	}
 	if v.Protection == nil {
 		res.Protection = 0
+	}
+
+	return res
+}
+
+// unmarshalInventoryEntryResponseToFrontInventoryEntry builds a value of type
+// *front.InventoryEntry from a value of type *InventoryEntryResponse.
+func unmarshalInventoryEntryResponseToFrontInventoryEntry(v *InventoryEntryResponse) *front.InventoryEntry {
+	res := &front.InventoryEntry{
+		Item:  *v.Item,
+		Count: *v.Count,
 	}
 
 	return res

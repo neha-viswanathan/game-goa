@@ -10,6 +10,8 @@ package server
 import (
 	inventorypb "inventory/gen/grpc/inventory/pb"
 	inventory "inventory/gen/inventory"
+
+	goa "goa.design/goa/v3/pkg"
 )
 
 // NewAddItemPayload builds the payload of the "addItem" endpoint of the
@@ -18,6 +20,7 @@ func NewAddItemPayload(message *inventorypb.AddItemRequest) *inventory.AddItemPa
 	v := &inventory.AddItemPayload{
 		Character: message.Character,
 		Item:      message.Item,
+		Count:     message.Count,
 	}
 	return v
 }
@@ -55,6 +58,7 @@ func NewRemoveItemPayload(message *inventorypb.RemoveItemRequest) *inventory.Rem
 	v := &inventory.RemoveItemPayload{
 		Character: message.Character,
 		Item:      message.Item,
+		Count:     message.Count,
 	}
 	return v
 }
@@ -87,11 +91,14 @@ func NewGetInventoryPayload(message *inventorypb.GetInventoryRequest) *inventory
 
 // NewProtoGetInventoryResponse builds the gRPC response type from the result
 // of the "getInventory" endpoint of the "Inventory" service.
-func NewProtoGetInventoryResponse(result []string) *inventorypb.GetInventoryResponse {
+func NewProtoGetInventoryResponse(result []*inventory.InventoryEntry) *inventorypb.GetInventoryResponse {
 	message := &inventorypb.GetInventoryResponse{}
-	message.Field = make([]string, len(result))
+	message.Field = make([]*inventorypb.InventoryEntry, len(result))
 	for i, val := range result {
-		message.Field[i] = val
+		message.Field[i] = &inventorypb.InventoryEntry{
+			Item:  val.Item,
+			Count: val.Count,
+		}
 	}
 	return message
 }
@@ -104,4 +111,20 @@ func NewGetInventoryCharacterNotFoundError(er *inventory.CharacterNotFound) *inv
 		Name:     er.Name,
 	}
 	return message
+}
+
+// ValidateAddItemRequest runs the validations defined on AddItemRequest.
+func ValidateAddItemRequest(message *inventorypb.AddItemRequest) (err error) {
+	if message.Count < 1 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError("message.count", message.Count, 1, true))
+	}
+	return
+}
+
+// ValidateRemoveItemRequest runs the validations defined on RemoveItemRequest.
+func ValidateRemoveItemRequest(message *inventorypb.RemoveItemRequest) (err error) {
+	if message.Count < 1 {
+		err = goa.MergeErrors(err, goa.InvalidRangeError("message.count", message.Count, 1, true))
+	}
+	return
 }

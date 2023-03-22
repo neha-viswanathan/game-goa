@@ -34,6 +34,9 @@ func DecodeAddItemRequest(ctx context.Context, v interface{}, md metadata.MD) (i
 		if message, ok = v.(*inventorypb.AddItemRequest); !ok {
 			return nil, goagrpc.ErrInvalidType("Inventory", "addItem", "*inventorypb.AddItemRequest", v)
 		}
+		if err := ValidateAddItemRequest(message); err != nil {
+			return nil, err
+		}
 	}
 	var payload *inventory.AddItemPayload
 	{
@@ -60,6 +63,9 @@ func DecodeRemoveItemRequest(ctx context.Context, v interface{}, md metadata.MD)
 		if message, ok = v.(*inventorypb.RemoveItemRequest); !ok {
 			return nil, goagrpc.ErrInvalidType("Inventory", "removeItem", "*inventorypb.RemoveItemRequest", v)
 		}
+		if err := ValidateRemoveItemRequest(message); err != nil {
+			return nil, err
+		}
 	}
 	var payload *inventory.RemoveItemPayload
 	{
@@ -71,9 +77,9 @@ func DecodeRemoveItemRequest(ctx context.Context, v interface{}, md metadata.MD)
 // EncodeGetInventoryResponse encodes responses from the "Inventory" service
 // "getInventory" endpoint.
 func EncodeGetInventoryResponse(ctx context.Context, v interface{}, hdr, trlr *metadata.MD) (interface{}, error) {
-	result, ok := v.([]string)
+	result, ok := v.([]*inventory.InventoryEntry)
 	if !ok {
-		return nil, goagrpc.ErrInvalidType("Inventory", "getInventory", "[]string", v)
+		return nil, goagrpc.ErrInvalidType("Inventory", "getInventory", "[]*inventory.InventoryEntry", v)
 	}
 	resp := NewProtoGetInventoryResponse(result)
 	return resp, nil

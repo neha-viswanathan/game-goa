@@ -30,8 +30,8 @@ func UsageCommands() string {
 func UsageExamples() string {
 	return os.Args[0] + ` front create-character --body '{
       "description": "Savior of Princess Zelda",
-      "experience": 3453331,
-      "health": 6413167,
+      "experience": 7974469,
+      "health": 5252954,
       "name": "Link"
    }'` + "\n" +
 		""
@@ -80,10 +80,12 @@ func ParseEndpoint(
 		frontDeleteItemNameFlag = frontDeleteItemFlags.String("name", "REQUIRED", "name of item to be deleted")
 
 		frontAddInventoryItemFlags         = flag.NewFlagSet("add-inventory-item", flag.ExitOnError)
+		frontAddInventoryItemBodyFlag      = frontAddInventoryItemFlags.String("body", "REQUIRED", "")
 		frontAddInventoryItemCharacterFlag = frontAddInventoryItemFlags.String("character", "REQUIRED", "character's name")
 		frontAddInventoryItemItemFlag      = frontAddInventoryItemFlags.String("item", "REQUIRED", "item's name")
 
 		frontRemoveInventoryItemFlags         = flag.NewFlagSet("remove-inventory-item", flag.ExitOnError)
+		frontRemoveInventoryItemBodyFlag      = frontRemoveInventoryItemFlags.String("body", "REQUIRED", "")
 		frontRemoveInventoryItemCharacterFlag = frontRemoveInventoryItemFlags.String("character", "REQUIRED", "character's name")
 		frontRemoveInventoryItemItemFlag      = frontRemoveInventoryItemFlags.String("item", "REQUIRED", "item's name")
 
@@ -235,10 +237,10 @@ func ParseEndpoint(
 				data, err = frontc.BuildDeleteItemPayload(*frontDeleteItemNameFlag)
 			case "add-inventory-item":
 				endpoint = c.AddInventoryItem()
-				data, err = frontc.BuildAddInventoryItemPayload(*frontAddInventoryItemCharacterFlag, *frontAddInventoryItemItemFlag)
+				data, err = frontc.BuildAddInventoryItemPayload(*frontAddInventoryItemBodyFlag, *frontAddInventoryItemCharacterFlag, *frontAddInventoryItemItemFlag)
 			case "remove-inventory-item":
 				endpoint = c.RemoveInventoryItem()
-				data, err = frontc.BuildRemoveInventoryItemPayload(*frontRemoveInventoryItemCharacterFlag, *frontRemoveInventoryItemItemFlag)
+				data, err = frontc.BuildRemoveInventoryItemPayload(*frontRemoveInventoryItemBodyFlag, *frontRemoveInventoryItemCharacterFlag, *frontRemoveInventoryItemItemFlag)
 			case "get-inventory":
 				endpoint = c.GetInventory()
 				data, err = frontc.BuildGetInventoryPayload(*frontGetInventoryCharacterFlag)
@@ -286,8 +288,8 @@ Create a new character
 Example:
     %[1]s front create-character --body '{
       "description": "Savior of Princess Zelda",
-      "experience": 3453331,
-      "health": 6413167,
+      "experience": 7974469,
+      "health": 5252954,
       "name": "Link"
    }'
 `, os.Args[0])
@@ -300,7 +302,7 @@ Get a character by name
     -name STRING: name of character to be retrieved
 
 Example:
-    %[1]s front get-character --name "Occaecati nesciunt."
+    %[1]s front get-character --name "Voluptatibus quisquam aperiam distinctio."
 `, os.Args[0])
 }
 
@@ -324,8 +326,8 @@ Update a given character
 Example:
     %[1]s front update-character --body '{
       "description": "Savior of Princess Zelda",
-      "experience": 1616326,
-      "health": 1962451
+      "experience": 2029508,
+      "health": 1800536
    }' --name "Link"
 `, os.Args[0])
 }
@@ -337,7 +339,7 @@ Delete a given character
     -name STRING: name of character to be deleted
 
 Example:
-    %[1]s front delete-character --name "Doloribus a."
+    %[1]s front delete-character --name "Rerum adipisci ut non quidem."
 `, os.Args[0])
 }
 
@@ -349,11 +351,11 @@ Create a new item
 
 Example:
     %[1]s front create-item --body '{
-      "damage": 308475,
+      "damage": 344029,
       "description": "Restores health",
-      "healing": 363332,
+      "healing": 49233,
       "name": "Potion",
-      "protection": 6450
+      "protection": 6286
    }'
 `, os.Args[0])
 }
@@ -408,26 +410,32 @@ Example:
 }
 
 func frontAddInventoryItemUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] front add-inventory-item -character STRING -item STRING
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] front add-inventory-item -body JSON -character STRING -item STRING
 
 Add an item to a character's inventory
+    -body JSON: 
     -character STRING: character's name
     -item STRING: item's name
 
 Example:
-    %[1]s front add-inventory-item --character "Et qui consequatur dolorum deserunt facilis sit." --item "Quas deleniti accusantium quis consequatur perferendis."
+    %[1]s front add-inventory-item --body '{
+      "count": 1357457099
+   }' --character "Qui consequatur dolorum deserunt facilis sit." --item "Quas deleniti accusantium quis consequatur perferendis."
 `, os.Args[0])
 }
 
 func frontRemoveInventoryItemUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] front remove-inventory-item -character STRING -item STRING
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] front remove-inventory-item -body JSON -character STRING -item STRING
 
 Remove an item from a character's inventory
+    -body JSON: 
     -character STRING: character's name
     -item STRING: item's name
 
 Example:
-    %[1]s front remove-inventory-item --character "Tempora facere." --item "Aut qui optio."
+    %[1]s front remove-inventory-item --body '{
+      "count": 2451514394
+   }' --character "Fugit molestiae in cupiditate." --item "Ut adipisci."
 `, os.Args[0])
 }
 
@@ -438,6 +446,6 @@ Get a character's inventory
     -character STRING: name of character
 
 Example:
-    %[1]s front get-inventory --character "Cupiditate aspernatur ut adipisci."
+    %[1]s front get-inventory --character "Nisi voluptates nulla."
 `, os.Args[0])
 }

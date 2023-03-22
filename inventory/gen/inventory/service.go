@@ -18,7 +18,7 @@ type Service interface {
 	// Remove an item from a character's inventory
 	RemoveItem(context.Context, *RemoveItemPayload) (err error)
 	// Get a character's inventory
-	GetInventory(context.Context, *GetInventoryPayload) (res []string, err error)
+	GetInventory(context.Context, *GetInventoryPayload) (res []*InventoryEntry, err error)
 }
 
 // ServiceName is the name of the service as defined in the design. This is the
@@ -37,6 +37,8 @@ type AddItemPayload struct {
 	Character string
 	// item's name
 	Item string
+	// item's count
+	Count uint32
 }
 
 // character not found
@@ -54,6 +56,14 @@ type GetInventoryPayload struct {
 	Character string
 }
 
+// A custom type to keep track of item name and its count
+type InventoryEntry struct {
+	// item name
+	Item string
+	// item count
+	Count uint32
+}
+
 // item not found
 type ItemNotFound struct {
 	// item not found
@@ -69,6 +79,8 @@ type RemoveItemPayload struct {
 	Character string
 	// item's name
 	Item string
+	// item's count
+	Count uint32
 }
 
 // Error returns an error description.

@@ -24,10 +24,9 @@ func NewCharacter(logger *log.Logger) character.Service {
 // CreateCharacter Create a new character
 func (s *charactersrvc) CreateCharacter(ctx context.Context, p *character.Character) (res *character.Character, err error) {
 	s.logger.Print("character.create")
-	for name := range s.characters {
-		if name == p.Name {
-			return nil, &character.CharacterAlreadyExists{Message: "character already exists"}
-		}
+	_, found := s.characters[p.Name]
+	if found {
+		return nil, &character.CharacterAlreadyExists{Message: "character already exists"}
 	}
 	res = &character.Character{
 		Name:        p.Name,

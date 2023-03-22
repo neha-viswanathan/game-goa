@@ -97,6 +97,13 @@ var ItemNotFound = Type("ItemNotFound", func() {
 	Required("message", "name")
 })
 
+var InventoryEntry = Type("InventoryEntry", func() {
+	Description("A custom type to keep track of item name and its count")
+	Field(1, "item", String, "item name")
+	Field(2, "count", UInt32, "item count")
+	Required("item", "count")
+})
+
 var _ = Service("Front", func() {
 	Description("The front service is the consumer facing API. It proxies the call to the backend services.")
 
@@ -224,7 +231,8 @@ var _ = Service("Front", func() {
 		Payload(func() {
 			Field(1, "character", String, "character's name")
 			Field(2, "item", String, "item's name")
-			Required("character", "item")
+			Field(3, "count", UInt32, "item's count")
+			Required("character", "item", "count")
 		})
 		HTTP(func() {
 			POST("/api/inventory/{character}/{item}")
@@ -239,7 +247,8 @@ var _ = Service("Front", func() {
 		Payload(func() {
 			Field(1, "character", String, "character's name")
 			Field(2, "item", String, "item's name")
-			Required("character", "item")
+			Field(3, "count", UInt32, "item's count")
+			Required("character", "item", "count")
 		})
 		HTTP(func() {
 			DELETE("/api/inventory/{character}/{item}")
@@ -254,7 +263,7 @@ var _ = Service("Front", func() {
 			Field(1, "character", String, "name of character")
 			Required("character")
 		})
-		Result(ArrayOf(String))
+		Result(ArrayOf(InventoryEntry))
 		HTTP(func() {
 			GET("/api/inventory/{character}")
 			Response(StatusOK)

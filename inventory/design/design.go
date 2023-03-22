@@ -28,6 +28,13 @@ var ItemNotFound = Type("ItemNotFound", func() {
 	Required("message", "name")
 })
 
+var InventoryEntry = Type("InventoryEntry", func() {
+	Description("A custom type to keep track of item name and its count")
+	Field(1, "item", String, "item name")
+	Field(2, "count", UInt32, "item count")
+	Required("item", "count")
+})
+
 var _ = Service("Inventory", func() {
 	Description("The inventory service performs CRUD operations on a character's inventory")
 
@@ -39,12 +46,11 @@ var _ = Service("Inventory", func() {
 		Payload(func() {
 			Field(1, "character", String, "character's name")
 			Field(2, "item", String, "item's name")
-			// TODO: add a count
-			//Field(3, "count", UInt32, "item's count", func() {
-			//	Minimum(1)
-			//	Default(1)
-			//})
-			Required("character", "item")
+			Field(3, "count", UInt32, "item's count", func() {
+				Minimum(1)
+				Default(1)
+			})
+			Required("character", "item", "count")
 		})
 		GRPC(func() {
 			Response(CodeOK)
@@ -58,12 +64,11 @@ var _ = Service("Inventory", func() {
 		Payload(func() {
 			Field(1, "character", String, "character's name")
 			Field(2, "item", String, "item's name")
-			// TODO: add a count
-			//Field(3, "count", UInt32, "item's count", func() {
-			//	Minimum(1)
-			//	Default(1)
-			//})
-			Required("character", "item")
+			Field(3, "count", UInt32, "item's count", func() {
+				Minimum(1)
+				Default(1)
+			})
+			Required("character", "item", "count")
 		})
 		GRPC(func() {
 			Response(CodeOK)
@@ -77,8 +82,7 @@ var _ = Service("Inventory", func() {
 			Field(1, "character", String, "name of character")
 			Required("character")
 		})
-		// TODO: add a count by defining a result type [item, count]
-		Result(ArrayOf(String))
+		Result(ArrayOf(InventoryEntry))
 		GRPC(func() {
 			Response(CodeOK)
 			Response("CharacterNotFound", CodeNotFound)

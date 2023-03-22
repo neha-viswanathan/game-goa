@@ -39,7 +39,7 @@ type Service interface {
 	// Remove an item from a character's inventory
 	RemoveInventoryItem(context.Context, *RemoveInventoryItemPayload) (err error)
 	// Get a character's inventory
-	GetInventory(context.Context, *GetInventoryPayload) (res []string, err error)
+	GetInventory(context.Context, *GetInventoryPayload) (res []*InventoryEntry, err error)
 }
 
 // ServiceName is the name of the service as defined in the design. This is the
@@ -59,6 +59,8 @@ type AddInventoryItemPayload struct {
 	Character string
 	// item's name
 	Item string
+	// item's count
+	Count uint32
 }
 
 // Character is the payload type of the Front service createCharacter method.
@@ -122,6 +124,14 @@ type GetItemPayload struct {
 	Name string
 }
 
+// A custom type to keep track of item name and its count
+type InventoryEntry struct {
+	// item name
+	Item string
+	// item count
+	Count uint32
+}
+
 // Item is the payload type of the Front service createItem method.
 type Item struct {
 	// Name, which is a unique identifier
@@ -144,6 +154,14 @@ type ItemAlreadyExists struct {
 	Name string
 }
 
+// item count not valid
+type ItemCountNotValid struct {
+	// item count not valid
+	Message string
+	// item name
+	Name string
+}
+
 // item not found
 type ItemNotFound struct {
 	// item not found
@@ -159,6 +177,8 @@ type RemoveInventoryItemPayload struct {
 	Character string
 	// item's name
 	Item string
+	// item's count
+	Count uint32
 }
 
 // Error returns an error description.
@@ -210,6 +230,23 @@ func (e *ItemAlreadyExists) ErrorName() string {
 // GoaErrorName returns "ItemAlreadyExists".
 func (e *ItemAlreadyExists) GoaErrorName() string {
 	return "ItemAlreadyExists"
+}
+
+// Error returns an error description.
+func (e *ItemCountNotValid) Error() string {
+	return "item count not valid"
+}
+
+// ErrorName returns "ItemCountNotValid".
+//
+// Deprecated: Use GoaErrorName - https://github.com/goadesign/goa/issues/3105
+func (e *ItemCountNotValid) ErrorName() string {
+	return e.GoaErrorName()
+}
+
+// GoaErrorName returns "ItemCountNotValid".
+func (e *ItemCountNotValid) GoaErrorName() string {
+	return "ItemCountNotValid"
 }
 
 // Error returns an error description.

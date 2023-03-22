@@ -66,6 +66,20 @@ type UpdateItemRequestBody struct {
 	Protection uint32 `form:"protection" json:"protection" xml:"protection"`
 }
 
+// AddInventoryItemRequestBody is the type of the "Front" service
+// "addInventoryItem" endpoint HTTP request body.
+type AddInventoryItemRequestBody struct {
+	// item's count
+	Count uint32 `form:"count" json:"count" xml:"count"`
+}
+
+// RemoveInventoryItemRequestBody is the type of the "Front" service
+// "removeInventoryItem" endpoint HTTP request body.
+type RemoveInventoryItemRequestBody struct {
+	// item's count
+	Count uint32 `form:"count" json:"count" xml:"count"`
+}
+
 // CreateCharacterResponseBody is the type of the "Front" service
 // "createCharacter" endpoint HTTP response body.
 type CreateCharacterResponseBody struct {
@@ -158,6 +172,10 @@ type UpdateItemResponseBody struct {
 	Protection *uint32 `form:"protection,omitempty" json:"protection,omitempty" xml:"protection,omitempty"`
 }
 
+// GetInventoryResponseBody is the type of the "Front" service "getInventory"
+// endpoint HTTP response body.
+type GetInventoryResponseBody []*InventoryEntryResponse
+
 // CreateCharacterCharacterAlreadyExistsResponseBody is the type of the "Front"
 // service "createCharacter" endpoint HTTP response body for the
 // "CharacterAlreadyExists" error.
@@ -233,6 +251,16 @@ type AddInventoryItemItemNotFoundResponseBody struct {
 	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
 }
 
+// AddInventoryItemItemCountNotValidResponseBody is the type of the "Front"
+// service "addInventoryItem" endpoint HTTP response body for the
+// "ItemCountNotValid" error.
+type AddInventoryItemItemCountNotValidResponseBody struct {
+	// item count not valid
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// item name
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+}
+
 // RemoveInventoryItemCharacterNotFoundResponseBody is the type of the "Front"
 // service "removeInventoryItem" endpoint HTTP response body for the
 // "CharacterNotFound" error.
@@ -240,6 +268,16 @@ type RemoveInventoryItemCharacterNotFoundResponseBody struct {
 	// character not found
 	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
 	// character name
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+}
+
+// RemoveInventoryItemItemCountNotValidResponseBody is the type of the "Front"
+// service "removeInventoryItem" endpoint HTTP response body for the
+// "ItemCountNotValid" error.
+type RemoveInventoryItemItemCountNotValidResponseBody struct {
+	// item count not valid
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// item name
 	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
 }
 
@@ -276,6 +314,14 @@ type ItemResponse struct {
 	Healing *uint32 `form:"healing,omitempty" json:"healing,omitempty" xml:"healing,omitempty"`
 	// Amount of protection
 	Protection *uint32 `form:"protection,omitempty" json:"protection,omitempty" xml:"protection,omitempty"`
+}
+
+// InventoryEntryResponse is used to define fields on response body types.
+type InventoryEntryResponse struct {
+	// item name
+	Item *string `form:"item,omitempty" json:"item,omitempty" xml:"item,omitempty"`
+	// item count
+	Count *uint32 `form:"count,omitempty" json:"count,omitempty" xml:"count,omitempty"`
 }
 
 // NewCreateCharacterRequestBody builds the HTTP request body from the payload
@@ -394,6 +440,24 @@ func NewUpdateItemRequestBody(p *front.Item) *UpdateItemRequestBody {
 		if body.Protection == zero {
 			body.Protection = 0
 		}
+	}
+	return body
+}
+
+// NewAddInventoryItemRequestBody builds the HTTP request body from the payload
+// of the "addInventoryItem" endpoint of the "Front" service.
+func NewAddInventoryItemRequestBody(p *front.AddInventoryItemPayload) *AddInventoryItemRequestBody {
+	body := &AddInventoryItemRequestBody{
+		Count: p.Count,
+	}
+	return body
+}
+
+// NewRemoveInventoryItemRequestBody builds the HTTP request body from the
+// payload of the "removeInventoryItem" endpoint of the "Front" service.
+func NewRemoveInventoryItemRequestBody(p *front.RemoveInventoryItemPayload) *RemoveInventoryItemRequestBody {
+	body := &RemoveInventoryItemRequestBody{
+		Count: p.Count,
 	}
 	return body
 }
@@ -679,12 +743,45 @@ func NewAddInventoryItemItemNotFound(body *AddInventoryItemItemNotFoundResponseB
 	return v
 }
 
+// NewAddInventoryItemItemCountNotValid builds a Front service addInventoryItem
+// endpoint ItemCountNotValid error.
+func NewAddInventoryItemItemCountNotValid(body *AddInventoryItemItemCountNotValidResponseBody) *front.ItemCountNotValid {
+	v := &front.ItemCountNotValid{
+		Message: *body.Message,
+		Name:    *body.Name,
+	}
+
+	return v
+}
+
 // NewRemoveInventoryItemCharacterNotFound builds a Front service
 // removeInventoryItem endpoint CharacterNotFound error.
 func NewRemoveInventoryItemCharacterNotFound(body *RemoveInventoryItemCharacterNotFoundResponseBody) *front.CharacterNotFound {
 	v := &front.CharacterNotFound{
 		Message: *body.Message,
 		Name:    *body.Name,
+	}
+
+	return v
+}
+
+// NewRemoveInventoryItemItemCountNotValid builds a Front service
+// removeInventoryItem endpoint ItemCountNotValid error.
+func NewRemoveInventoryItemItemCountNotValid(body *RemoveInventoryItemItemCountNotValidResponseBody) *front.ItemCountNotValid {
+	v := &front.ItemCountNotValid{
+		Message: *body.Message,
+		Name:    *body.Name,
+	}
+
+	return v
+}
+
+// NewGetInventoryInventoryEntryOK builds a "Front" service "getInventory"
+// endpoint result from a HTTP "OK" response.
+func NewGetInventoryInventoryEntryOK(body []*InventoryEntryResponse) []*front.InventoryEntry {
+	v := make([]*front.InventoryEntry, len(body))
+	for i, val := range body {
+		v[i] = unmarshalInventoryEntryResponseToFrontInventoryEntry(val)
 	}
 
 	return v
@@ -1070,9 +1167,33 @@ func ValidateAddInventoryItemItemNotFoundResponseBody(body *AddInventoryItemItem
 	return
 }
 
+// ValidateAddInventoryItemItemCountNotValidResponseBody runs the validations
+// defined on addInventoryItem_ItemCountNotValid_response_body
+func ValidateAddInventoryItemItemCountNotValidResponseBody(body *AddInventoryItemItemCountNotValidResponseBody) (err error) {
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	return
+}
+
 // ValidateRemoveInventoryItemCharacterNotFoundResponseBody runs the
 // validations defined on removeInventoryItem_CharacterNotFound_response_body
 func ValidateRemoveInventoryItemCharacterNotFoundResponseBody(body *RemoveInventoryItemCharacterNotFoundResponseBody) (err error) {
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	return
+}
+
+// ValidateRemoveInventoryItemItemCountNotValidResponseBody runs the
+// validations defined on removeInventoryItem_ItemCountNotValid_response_body
+func ValidateRemoveInventoryItemItemCountNotValidResponseBody(body *RemoveInventoryItemItemCountNotValidResponseBody) (err error) {
 	if body.Message == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
 	}
@@ -1179,6 +1300,18 @@ func ValidateItemResponse(body *ItemResponse) (err error) {
 		if *body.Protection > 10000 {
 			err = goa.MergeErrors(err, goa.InvalidRangeError("body.protection", *body.Protection, 10000, false))
 		}
+	}
+	return
+}
+
+// ValidateInventoryEntryResponse runs the validations defined on
+// InventoryEntryResponse
+func ValidateInventoryEntryResponse(body *InventoryEntryResponse) (err error) {
+	if body.Item == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("item", "body"))
+	}
+	if body.Count == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("count", "body"))
 	}
 	return
 }

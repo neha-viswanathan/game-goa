@@ -54,11 +54,11 @@ func (c *Client) RemoveItem(ctx context.Context, p *RemoveItemPayload) (err erro
 //   - "CharacterNotFound" (type *CharacterNotFound)
 //   - "ItemNotFound" (type *ItemNotFound)
 //   - error: internal error
-func (c *Client) GetInventory(ctx context.Context, p *GetInventoryPayload) (res []string, err error) {
+func (c *Client) GetInventory(ctx context.Context, p *GetInventoryPayload) (res []*InventoryEntry, err error) {
 	var ires interface{}
 	ires, err = c.GetInventoryEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
-	return ires.([]string), nil
+	return ires.([]*InventoryEntry), nil
 }

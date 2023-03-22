@@ -24,21 +24,33 @@ paths:
                                     $ref: '#/components/schemas/CreateCharacterRequestBody'
                                 example:
                                     - description: Savior of Princess Zelda
-                                      experience: 2029508
-                                      health: 1800536
+                                      experience: 5045347
+                                      health: 8601785
                                       name: Link
                                     - description: Savior of Princess Zelda
-                                      experience: 2029508
-                                      health: 1800536
+                                      experience: 5045347
+                                      health: 8601785
+                                      name: Link
+                                    - description: Savior of Princess Zelda
+                                      experience: 5045347
+                                      health: 8601785
                                       name: Link
                             example:
                                 - description: Savior of Princess Zelda
-                                  experience: 2029508
-                                  health: 1800536
+                                  experience: 5045347
+                                  health: 8601785
                                   name: Link
                                 - description: Savior of Princess Zelda
-                                  experience: 2029508
-                                  health: 1800536
+                                  experience: 5045347
+                                  health: 8601785
+                                  name: Link
+                                - description: Savior of Princess Zelda
+                                  experience: 5045347
+                                  health: 8601785
+                                  name: Link
+                                - description: Savior of Princess Zelda
+                                  experience: 5045347
+                                  health: 8601785
                                   name: Link
         post:
             tags:
@@ -54,8 +66,8 @@ paths:
                             $ref: '#/components/schemas/CreateCharacterRequestBody'
                         example:
                             description: Savior of Princess Zelda
-                            experience: 3453331
-                            health: 6413167
+                            experience: 7974469
+                            health: 5252954
                             name: Link
             responses:
                 "201":
@@ -66,8 +78,8 @@ paths:
                                 $ref: '#/components/schemas/CreateCharacterRequestBody'
                             example:
                                 description: Savior of Princess Zelda
-                                experience: 3350049
-                                health: 6122903
+                                experience: 3618709
+                                health: 6855779
                                 name: Link
                 "409":
                     description: 'CharacterAlreadyExists: character already exists'
@@ -90,8 +102,8 @@ paths:
                   schema:
                     type: string
                     description: name of character to be deleted
-                    example: Minima ut dolor in rerum.
-                  example: Laboriosam amet at.
+                    example: Velit atque beatae rerum et molestiae.
+                  example: Fuga autem inventore recusandae corrupti.
             responses:
                 "200":
                     description: OK response.
@@ -109,8 +121,8 @@ paths:
                   schema:
                     type: string
                     description: name of character to be retrieved
-                    example: Rerum nihil aut ducimus.
-                  example: Nemo rerum.
+                    example: Quo sed quia praesentium.
+                  example: Voluptatem facilis in et sed quisquam.
             responses:
                 "200":
                     description: OK response.
@@ -120,8 +132,8 @@ paths:
                                 $ref: '#/components/schemas/CreateCharacterRequestBody'
                             example:
                                 description: Savior of Princess Zelda
-                                experience: 3922357
-                                health: 6657167
+                                experience: 6002010
+                                health: 7748018
                                 name: Link
                 "404":
                     description: 'CharacterNotFound: character not found'
@@ -154,8 +166,8 @@ paths:
                             $ref: '#/components/schemas/UpdateCharacterRequestBody'
                         example:
                             description: Savior of Princess Zelda
-                            experience: 1616326
-                            health: 1962451
+                            experience: 2029508
+                            health: 1800536
             responses:
                 "200":
                     description: OK response.
@@ -165,8 +177,8 @@ paths:
                                 $ref: '#/components/schemas/CreateCharacterRequestBody'
                             example:
                                 description: Savior of Princess Zelda
-                                experience: 1625059
-                                health: 7322347
+                                experience: 9758259
+                                health: 8032076
                                 name: Link
                 "404":
                     description: 'CharacterNotFound: character not found'
@@ -189,8 +201,8 @@ paths:
                   schema:
                     type: string
                     description: name of character
-                    example: Quidem quod id natus assumenda voluptates.
-                  example: Aliquid ex laudantium.
+                    example: Molestiae placeat omnis officiis nam iste deserunt.
+                  example: Ut quo.
             responses:
                 "200":
                     description: OK response.
@@ -199,14 +211,19 @@ paths:
                             schema:
                                 type: array
                                 items:
-                                    type: string
-                                    example: Officiis aut quisquam consequatur sed et qui.
+                                    $ref: '#/components/schemas/InventoryEntry'
                                 example:
-                                    - Rerum quisquam voluptates et voluptas dolor porro.
-                                    - Doloremque quis nihil amet.
+                                    - count: 451195482
+                                      item: Inventore eum veritatis voluptatem soluta ullam aut.
+                                    - count: 451195482
+                                      item: Inventore eum veritatis voluptatem soluta ullam aut.
+                                    - count: 451195482
+                                      item: Inventore eum veritatis voluptatem soluta ullam aut.
                             example:
-                                - Odit dignissimos modi sint nihil harum.
-                                - Illo repudiandae quo non.
+                                - count: 451195482
+                                  item: Inventore eum veritatis voluptatem soluta ullam aut.
+                                - count: 451195482
+                                  item: Inventore eum veritatis voluptatem soluta ullam aut.
                 "404":
                     description: 'CharacterNotFound: character not found'
                     content:
@@ -228,8 +245,8 @@ paths:
                   schema:
                     type: string
                     description: character's name
-                    example: Velit atque beatae rerum et molestiae.
-                  example: Fuga autem inventore recusandae corrupti.
+                    example: Consectetur rerum enim dicta.
+                  example: Omnis consequatur rem.
                 - name: item
                   in: path
                   description: item's name
@@ -237,11 +254,25 @@ paths:
                   schema:
                     type: string
                     description: item's name
-                    example: Fugit dignissimos id dolores veniam eligendi nulla.
-                  example: Soluta odio pariatur nihil quos nisi.
+                    example: Corporis quia accusantium similique.
+                  example: Assumenda qui architecto quaerat non consequatur eum.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AddInventoryItemRequestBody'
+                        example:
+                            count: 2451514394
             responses:
                 "200":
                     description: OK response.
+                "400":
+                    description: 'ItemCountNotValid: item count not valid'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CharacterAlreadyExists'
                 "404":
                     description: 'CharacterNotFound: character not found'
                     content:
@@ -262,8 +293,8 @@ paths:
                   schema:
                     type: string
                     description: character's name
-                    example: Voluptate vitae vel temporibus expedita cumque iure.
-                  example: Omnis maxime optio quo sed.
+                    example: Nihil harum repudiandae illo.
+                  example: Quo non necessitatibus corrupti.
                 - name: item
                   in: path
                   description: item's name
@@ -271,11 +302,25 @@ paths:
                   schema:
                     type: string
                     description: item's name
-                    example: Praesentium laudantium.
-                  example: Facilis in et sed quisquam deleniti.
+                    example: Officiis illum porro deserunt.
+                  example: Eaque in quaerat consequuntur eaque.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AddInventoryItemRequestBody'
+                        example:
+                            count: 1357457099
             responses:
                 "200":
                     description: OK response.
+                "400":
+                    description: 'ItemCountNotValid: item count not valid'
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CharacterAlreadyExists'
                 "404":
                     description: 'ItemNotFound: item not found'
                     content:
@@ -299,6 +344,11 @@ paths:
                                 items:
                                     $ref: '#/components/schemas/CreateItemRequestBody'
                                 example:
+                                    - damage: 781823
+                                      description: Restores health
+                                      healing: 673915
+                                      name: Potion
+                                      protection: 5047
                                     - damage: 781823
                                       description: Restores health
                                       healing: 673915
@@ -338,11 +388,11 @@ paths:
                         schema:
                             $ref: '#/components/schemas/CreateItemRequestBody'
                         example:
-                            damage: 308475
+                            damage: 344029
                             description: Restores health
-                            healing: 363332
+                            healing: 49233
                             name: Potion
-                            protection: 6450
+                            protection: 6286
             responses:
                 "201":
                     description: Created response.
@@ -351,11 +401,11 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/CreateItemRequestBody'
                             example:
-                                damage: 683067
+                                damage: 308475
                                 description: Restores health
-                                healing: 687438
+                                healing: 363332
                                 name: Potion
-                                protection: 9422
+                                protection: 6450
                 "409":
                     description: 'ItemAlreadyExists: item already exists'
                     content:
@@ -377,8 +427,8 @@ paths:
                   schema:
                     type: string
                     description: name of item to be deleted
-                    example: Dolorem enim dolores.
-                  example: Et ut beatae dolore.
+                    example: Quod id natus assumenda voluptates quaerat aliquid.
+                  example: Laudantium vel facilis odit dignissimos modi.
             responses:
                 "200":
                     description: OK response.
@@ -396,8 +446,8 @@ paths:
                   schema:
                     type: string
                     description: name of item to be retrieved
-                    example: Repellendus pariatur et exercitationem in.
-                  example: Atque amet est.
+                    example: Fugit dignissimos id dolores veniam eligendi nulla.
+                  example: Soluta odio pariatur nihil quos nisi.
             responses:
                 "200":
                     description: OK response.
@@ -466,21 +516,32 @@ paths:
                                 $ref: '#/components/schemas/CharacterAlreadyExists'
 components:
     schemas:
+        AddInventoryItemRequestBody:
+            type: object
+            properties:
+                count:
+                    type: integer
+                    description: item's count
+                    example: 3109911531
+            example:
+                count: 2089159051
+            required:
+                - count
         CharacterAlreadyExists:
             type: object
             properties:
                 message:
                     type: string
                     description: character already exists
-                    example: Quia nobis assumenda et rerum ipsum.
+                    example: Omnis doloremque quis nihil amet omnis.
                 name:
                     type: string
                     description: character name
-                    example: Consequuntur fugit a veritatis aut.
+                    example: Nihil aut ducimus.
             description: character already exists
             example:
-                message: Sint eaque doloribus ut amet.
-                name: Et tempore maiores tempora et.
+                message: Nemo rerum.
+                name: Accusamus minima ut dolor in.
             required:
                 - message
                 - name
@@ -497,14 +558,14 @@ components:
                     type: integer
                     description: Amount of experience
                     default: 0
-                    example: 2711456
+                    example: 1249992
                     minimum: 0
                     maximum: 1e+07
                 health:
                     type: integer
                     description: Current health
                     default: 100
-                    example: 6654689
+                    example: 5409558
                     minimum: 0
                     maximum: 1e+07
                 name:
@@ -514,8 +575,8 @@ components:
                     maxLength: 32
             example:
                 description: Savior of Princess Zelda
-                experience: 8296950
-                health: 3737971
+                experience: 3374410
+                health: 2588814
                 name: Link
             required:
                 - name
@@ -526,7 +587,7 @@ components:
                     type: integer
                     description: Amount of damage
                     default: 0
-                    example: 534059
+                    example: 826971
                     minimum: 0
                     maximum: 1e+06
                 description:
@@ -538,7 +599,7 @@ components:
                     type: integer
                     description: Amount of healing
                     default: 0
-                    example: 102150
+                    example: 212650
                     minimum: 0
                     maximum: 1e+06
                 name:
@@ -550,18 +611,36 @@ components:
                     type: integer
                     description: Amount of protection
                     default: 0
-                    example: 4004
+                    example: 1394
                     minimum: 0
                     maximum: 10000
             example:
-                damage: 735714
+                damage: 111401
                 description: Restores health
-                healing: 83681
+                healing: 22385
                 name: Potion
-                protection: 1826
+                protection: 8572
             required:
                 - name
                 - description
+        InventoryEntry:
+            type: object
+            properties:
+                count:
+                    type: integer
+                    description: item count
+                    example: 2916225107
+                item:
+                    type: string
+                    description: item name
+                    example: Et ut beatae dolore.
+            description: A custom type to keep track of item name and its count
+            example:
+                count: 2255494066
+                item: Vitae vel temporibus expedita cumque iure atque.
+            required:
+                - item
+                - count
         UpdateCharacterRequestBody:
             type: object
             properties:
@@ -575,20 +654,20 @@ components:
                     type: integer
                     description: Amount of experience
                     default: 0
-                    example: 5415889
+                    example: 4165799
                     minimum: 0
                     maximum: 1e+07
                 health:
                     type: integer
                     description: Current health
                     default: 100
-                    example: 3197058
+                    example: 8350146
                     minimum: 0
                     maximum: 1e+07
             example:
                 description: Savior of Princess Zelda
-                experience: 3235313
-                health: 8717914
+                experience: 2405682
+                health: 97477
         UpdateItemRequestBody:
             type: object
             properties:
@@ -596,7 +675,7 @@ components:
                     type: integer
                     description: Amount of damage
                     default: 0
-                    example: 590776
+                    example: 273322
                     minimum: 0
                     maximum: 1e+06
                 description:
@@ -608,21 +687,21 @@ components:
                     type: integer
                     description: Amount of healing
                     default: 0
-                    example: 23248
+                    example: 839816
                     minimum: 0
                     maximum: 1e+06
                 protection:
                     type: integer
                     description: Amount of protection
                     default: 0
-                    example: 8391
+                    example: 705
                     minimum: 0
                     maximum: 10000
             example:
-                damage: 986385
+                damage: 729375
                 description: Restores health
-                healing: 47955
-                protection: 3250
+                healing: 714831
+                protection: 4900
             required:
                 - description
 tags:

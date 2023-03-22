@@ -24,10 +24,9 @@ func NewItem(logger *log.Logger) item.Service {
 // Create a new item
 func (s *itemsrvc) CreateItem(ctx context.Context, p *item.Item) (res *item.Item, err error) {
 	s.logger.Print("item.create")
-	for name := range s.items {
-		if name == p.Name {
-			return nil, &item.ItemAlreadyExists{Message: "item already exists"}
-		}
+	_, found := s.items[p.Name]
+	if found {
+		return nil, &item.ItemAlreadyExists{Message: "item already exists"}
 	}
 	res = &item.Item{
 		Name:        p.Name,

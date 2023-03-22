@@ -18,6 +18,7 @@ func NewProtoAddItemRequest(payload *inventory.AddItemPayload) *inventorypb.AddI
 	message := &inventorypb.AddItemRequest{
 		Character: payload.Character,
 		Item:      payload.Item,
+		Count:     payload.Count,
 	}
 	return message
 }
@@ -48,6 +49,7 @@ func NewProtoRemoveItemRequest(payload *inventory.RemoveItemPayload) *inventoryp
 	message := &inventorypb.RemoveItemRequest{
 		Character: payload.Character,
 		Item:      payload.Item,
+		Count:     payload.Count,
 	}
 	return message
 }
@@ -74,10 +76,13 @@ func NewProtoGetInventoryRequest(payload *inventory.GetInventoryPayload) *invent
 
 // NewGetInventoryResult builds the result type of the "getInventory" endpoint
 // of the "Inventory" service from the gRPC response type.
-func NewGetInventoryResult(message *inventorypb.GetInventoryResponse) []string {
-	result := make([]string, len(message.Field))
+func NewGetInventoryResult(message *inventorypb.GetInventoryResponse) []*inventory.InventoryEntry {
+	result := make([]*inventory.InventoryEntry, len(message.Field))
 	for i, val := range message.Field {
-		result[i] = val
+		result[i] = &inventory.InventoryEntry{
+			Item:  val.Item,
+			Count: val.Count,
+		}
 	}
 	return result
 }

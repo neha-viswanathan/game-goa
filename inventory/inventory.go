@@ -14,7 +14,7 @@ import (
 // The example methods log the requests and return zero values.
 type inventorysrvc struct {
 	logger          *log.Logger
-	inventories     map[string]map[string]bool
+	inventories     map[string]map[string]uint32
 	characterClient characterpb.CharacterClient
 	itemClient      itempb.ItemClient
 }
@@ -24,7 +24,7 @@ func NewInventory(logger *log.Logger, characterClient characterpb.CharacterClien
 
 	return &inventorysrvc{
 		logger:          logger,
-		inventories:     map[string]map[string]bool{},
+		inventories:     map[string]map[string]uint32{},
 		characterClient: characterClient,
 		itemClient:      itemClient,
 	}, nil
@@ -51,10 +51,10 @@ func (s *inventorysrvc) AddItem(ctx context.Context, p *inventory.AddItemPayload
 	// Check if character has an inventory
 	_, found := s.inventories[p.Character]
 	if !found {
-		s.inventories[p.Character] = map[string]bool{}
+		s.inventories[p.Character] = map[string]uint32{}
 	}
 
-	s.inventories[p.Character][p.Item] = true
+	s.inventories[p.Character][p.Item] += p.Count
 
 	return
 }
@@ -76,7 +76,7 @@ func (s *inventorysrvc) RemoveItem(ctx context.Context, p *inventory.RemoveItemP
 }
 
 // GetInventory Get a character's inventory
-func (s *inventorysrvc) GetInventory(ctx context.Context, p *inventory.GetInventoryPayload) (res []string, err error) {
+func (s *inventorysrvc) GetInventory(ctx context.Context, p *inventory.GetInventoryPayload) (res []*inventory.InventoryEntry, err error) {
 	s.logger.Print("inventory.getInventory")
 
 	// Check if character exists
@@ -87,8 +87,12 @@ func (s *inventorysrvc) GetInventory(ctx context.Context, p *inventory.GetInvent
 	}
 
 	// Build output by iterating over a character's inventory
-	for item := range s.inventories[p.Character] {
-		res = append(res, item)
+	for item, count := range s.inventories[p.Character] {
+		entry := &inventory.InventoryEntry{
+			Item:  item,
+			Count: count,
+		}
+		res = append(res, entry)
 	}
 
 	return res, nil

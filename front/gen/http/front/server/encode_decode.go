@@ -511,6 +511,22 @@ func EncodeAddInventoryItemResponse(encoder func(context.Context, http.ResponseW
 func DecodeAddInventoryItemRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
 	return func(r *http.Request) (interface{}, error) {
 		var (
+			body AddInventoryItemRequestBody
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		err = ValidateAddInventoryItemRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+
+		var (
 			character string
 			item      string
 
@@ -518,7 +534,7 @@ func DecodeAddInventoryItemRequest(mux goahttp.Muxer, decoder func(*http.Request
 		)
 		character = params["character"]
 		item = params["item"]
-		payload := NewAddInventoryItemPayload(character, item)
+		payload := NewAddInventoryItemPayload(&body, character, item)
 
 		return payload, nil
 	}
@@ -560,6 +576,19 @@ func EncodeAddInventoryItemError(encoder func(context.Context, http.ResponseWrit
 			w.Header().Set("goa-error", res.GoaErrorName())
 			w.WriteHeader(http.StatusNotFound)
 			return enc.Encode(body)
+		case "ItemCountNotValid":
+			var res *front.ItemCountNotValid
+			errors.As(v, &res)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(ctx, res)
+			} else {
+				body = NewAddInventoryItemItemCountNotValidResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.GoaErrorName())
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
 		default:
 			return encodeError(ctx, w, v)
 		}
@@ -580,6 +609,22 @@ func EncodeRemoveInventoryItemResponse(encoder func(context.Context, http.Respon
 func DecodeRemoveInventoryItemRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
 	return func(r *http.Request) (interface{}, error) {
 		var (
+			body RemoveInventoryItemRequestBody
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		err = ValidateRemoveInventoryItemRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+
+		var (
 			character string
 			item      string
 
@@ -587,7 +632,7 @@ func DecodeRemoveInventoryItemRequest(mux goahttp.Muxer, decoder func(*http.Requ
 		)
 		character = params["character"]
 		item = params["item"]
-		payload := NewRemoveInventoryItemPayload(character, item)
+		payload := NewRemoveInventoryItemPayload(&body, character, item)
 
 		return payload, nil
 	}
@@ -616,6 +661,19 @@ func EncodeRemoveInventoryItemError(encoder func(context.Context, http.ResponseW
 			w.Header().Set("goa-error", res.GoaErrorName())
 			w.WriteHeader(http.StatusNotFound)
 			return enc.Encode(body)
+		case "ItemCountNotValid":
+			var res *front.ItemCountNotValid
+			errors.As(v, &res)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(ctx, res)
+			} else {
+				body = NewRemoveInventoryItemItemCountNotValidResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.GoaErrorName())
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
 		default:
 			return encodeError(ctx, w, v)
 		}
@@ -626,9 +684,9 @@ func EncodeRemoveInventoryItemError(encoder func(context.Context, http.ResponseW
 // Front getInventory endpoint.
 func EncodeGetInventoryResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
 	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
-		res, _ := v.([]string)
+		res, _ := v.([]*front.InventoryEntry)
 		enc := encoder(ctx, w)
-		body := res
+		body := NewGetInventoryResponseBody(res)
 		w.WriteHeader(http.StatusOK)
 		return enc.Encode(body)
 	}
@@ -737,6 +795,17 @@ func marshalFrontItemToItemResponse(v *front.Item) *ItemResponse {
 		if res.Protection == zero {
 			res.Protection = 0
 		}
+	}
+
+	return res
+}
+
+// marshalFrontInventoryEntryToInventoryEntryResponse builds a value of type
+// *InventoryEntryResponse from a value of type *front.InventoryEntry.
+func marshalFrontInventoryEntryToInventoryEntryResponse(v *front.InventoryEntry) *InventoryEntryResponse {
+	res := &InventoryEntryResponse{
+		Item:  v.Item,
+		Count: v.Count,
 	}
 
 	return res

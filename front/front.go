@@ -310,6 +310,7 @@ func (s *frontsrvc) AddInventoryItem(ctx context.Context, p *front.AddInventoryI
 	_, err = s.inventoryClient.AddItem(ctx, &inventorypb.AddItemRequest{
 		Character: p.Character,
 		Item:      p.Item,
+		Count:     p.Count,
 	})
 	if err != nil {
 		status, ok := status.FromError(err)
@@ -324,6 +325,8 @@ func (s *frontsrvc) AddInventoryItem(ctx context.Context, p *front.AddInventoryI
 			case strings.Contains(status.Message(), "item"):
 				return &front.ItemNotFound{Message: "item not found"}
 			}
+		case codes.OutOfRange:
+			return &front.ItemCountNotValid{Message: "item count not valid"}
 		default:
 			return fmt.Errorf("unsupported code: %d, %v", status.Code(), err)
 		}
@@ -337,6 +340,7 @@ func (s *frontsrvc) RemoveInventoryItem(ctx context.Context, p *front.RemoveInve
 	_, err = s.inventoryClient.RemoveItem(ctx, &inventorypb.RemoveItemRequest{
 		Character: p.Character,
 		Item:      p.Item,
+		Count:     p.Count,
 	})
 	if err != nil {
 		status, ok := status.FromError(err)
@@ -346,6 +350,8 @@ func (s *frontsrvc) RemoveInventoryItem(ctx context.Context, p *front.RemoveInve
 		switch status.Code() {
 		case codes.NotFound:
 			return &front.CharacterNotFound{Message: "character not found"}
+		case codes.OutOfRange:
+			return &front.ItemCountNotValid{Message: "item count not valid"}
 		default:
 			return fmt.Errorf("unsupported code: %d, %v", status.Code(), err)
 		}
@@ -354,7 +360,7 @@ func (s *frontsrvc) RemoveInventoryItem(ctx context.Context, p *front.RemoveInve
 }
 
 // GetInventory Get a character's inventory
-func (s *frontsrvc) GetInventory(ctx context.Context, p *front.GetInventoryPayload) (res []string, err error) {
+func (s *frontsrvc) GetInventory(ctx context.Context, p *front.GetInventoryPayload) (res []*front.InventoryEntry, err error) {
 	s.logger.Print("front.getInventory")
 	getResponse, err := s.inventoryClient.GetInventory(ctx, &inventorypb.GetInventoryRequest{
 		Character: p.Character,
@@ -372,7 +378,11 @@ func (s *frontsrvc) GetInventory(ctx context.Context, p *front.GetInventoryPaylo
 		}
 	}
 
-	for _, entry := range getResponse.Field {
+	for _, val := range getResponse.Field {
+		entry := &front.InventoryEntry{
+			Item:  val.Item,
+			Count: val.Count,
+		}
 		res = append(res, entry)
 	}
 

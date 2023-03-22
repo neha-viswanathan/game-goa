@@ -23,13 +23,14 @@ func BuildAddItemPayload(inventoryAddItemMessage string) (*inventory.AddItemPayl
 		if inventoryAddItemMessage != "" {
 			err = json.Unmarshal([]byte(inventoryAddItemMessage), &message)
 			if err != nil {
-				return nil, fmt.Errorf("invalid JSON for message, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"character\": \"Rerum reprehenderit.\",\n      \"item\": \"Corporis saepe voluptatem praesentium sed.\"\n   }'")
+				return nil, fmt.Errorf("invalid JSON for message, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"character\": \"Laborum sed dolores corporis.\",\n      \"count\": 3513363385,\n      \"item\": \"Eum cum officia aut velit dolorum explicabo.\"\n   }'")
 			}
 		}
 	}
 	v := &inventory.AddItemPayload{
 		Character: message.Character,
 		Item:      message.Item,
+		Count:     message.Count,
 	}
 
 	return v, nil
@@ -44,13 +45,14 @@ func BuildRemoveItemPayload(inventoryRemoveItemMessage string) (*inventory.Remov
 		if inventoryRemoveItemMessage != "" {
 			err = json.Unmarshal([]byte(inventoryRemoveItemMessage), &message)
 			if err != nil {
-				return nil, fmt.Errorf("invalid JSON for message, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"character\": \"Alias omnis esse exercitationem molestiae voluptatem rerum.\",\n      \"item\": \"Et et id est ea aut voluptate.\"\n   }'")
+				return nil, fmt.Errorf("invalid JSON for message, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"character\": \"Recusandae quis.\",\n      \"count\": 155887092,\n      \"item\": \"Alias omnis esse exercitationem molestiae voluptatem rerum.\"\n   }'")
 			}
 		}
 	}
 	v := &inventory.RemoveItemPayload{
 		Character: message.Character,
 		Item:      message.Item,
+		Count:     message.Count,
 	}
 
 	return v, nil
@@ -65,7 +67,7 @@ func BuildGetInventoryPayload(inventoryGetInventoryMessage string) (*inventory.G
 		if inventoryGetInventoryMessage != "" {
 			err = json.Unmarshal([]byte(inventoryGetInventoryMessage), &message)
 			if err != nil {
-				return nil, fmt.Errorf("invalid JSON for message, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"character\": \"Architecto sequi laudantium et fuga assumenda omnis.\"\n   }'")
+				return nil, fmt.Errorf("invalid JSON for message, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"character\": \"Consequuntur et porro sit.\"\n   }'")
 			}
 		}
 	}

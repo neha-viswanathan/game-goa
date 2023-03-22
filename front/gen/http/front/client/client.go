@@ -324,10 +324,15 @@ func (c *Client) DeleteItem() goa.Endpoint {
 // service addInventoryItem server.
 func (c *Client) AddInventoryItem() goa.Endpoint {
 	var (
+		encodeRequest  = EncodeAddInventoryItemRequest(c.encoder)
 		decodeResponse = DecodeAddInventoryItemResponse(c.decoder, c.RestoreResponseBody)
 	)
 	return func(ctx context.Context, v interface{}) (interface{}, error) {
 		req, err := c.BuildAddInventoryItemRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
 		if err != nil {
 			return nil, err
 		}
@@ -343,10 +348,15 @@ func (c *Client) AddInventoryItem() goa.Endpoint {
 // Front service removeInventoryItem server.
 func (c *Client) RemoveInventoryItem() goa.Endpoint {
 	var (
+		encodeRequest  = EncodeRemoveInventoryItemRequest(c.encoder)
 		decodeResponse = DecodeRemoveInventoryItemResponse(c.decoder, c.RestoreResponseBody)
 	)
 	return func(ctx context.Context, v interface{}) (interface{}, error) {
 		req, err := c.BuildRemoveInventoryItemRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
 		if err != nil {
 			return nil, err
 		}

@@ -158,8 +158,7 @@ paths:
                     schema:
                         type: array
                         items:
-                            type: string
-                            example: Distinctio nihil.
+                            $ref: '#/definitions/InventoryEntryResponse'
                 "404":
                     description: Not Found response.
                     schema:
@@ -187,9 +186,23 @@ paths:
                   description: item's name
                   required: true
                   type: string
+                - name: AddInventoryItemRequestBody
+                  in: body
+                  required: true
+                  schema:
+                    $ref: '#/definitions/FrontAddInventoryItemRequestBody'
+                    required:
+                        - count
             responses:
                 "200":
                     description: OK response.
+                "400":
+                    description: Bad Request response.
+                    schema:
+                        $ref: '#/definitions/FrontAddInventoryItemItemCountNotValidResponseBody'
+                        required:
+                            - message
+                            - name
                 "404":
                     description: Not Found response.
                     schema:
@@ -216,9 +229,23 @@ paths:
                   description: item's name
                   required: true
                   type: string
+                - name: RemoveInventoryItemRequestBody
+                  in: body
+                  required: true
+                  schema:
+                    $ref: '#/definitions/FrontRemoveInventoryItemRequestBody'
+                    required:
+                        - count
             responses:
                 "200":
                     description: OK response.
+                "400":
+                    description: Bad Request response.
+                    schema:
+                        $ref: '#/definitions/FrontRemoveInventoryItemItemCountNotValidResponseBody'
+                        required:
+                            - message
+                            - name
                 "404":
                     description: Not Found response.
                     schema:
@@ -375,14 +402,14 @@ definitions:
                 type: integer
                 description: Amount of experience
                 default: 0
-                example: 2285596
+                example: 2491019
                 minimum: 0
                 maximum: 1e+07
             health:
                 type: integer
                 description: Current health
                 default: 100
-                example: 2650467
+                example: 9236741
                 minimum: 0
                 maximum: 1e+07
             name:
@@ -393,8 +420,8 @@ definitions:
         description: Attributes of the character
         example:
             description: Savior of Princess Zelda
-            experience: 470847
-            health: 7549643
+            experience: 7578319
+            health: 4238250
             name: Link
         required:
             - name
@@ -417,6 +444,25 @@ definitions:
         required:
             - message
             - name
+    FrontAddInventoryItemItemCountNotValidResponseBody:
+        title: FrontAddInventoryItemItemCountNotValidResponseBody
+        type: object
+        properties:
+            message:
+                type: string
+                description: item count not valid
+                example: Omnis quis odit.
+            name:
+                type: string
+                description: item name
+                example: Dolor molestias consequatur labore porro.
+        description: item count not valid
+        example:
+            message: Ea ut asperiores qui suscipit reprehenderit quaerat.
+            name: Omnis vel laboriosam tempora voluptate reprehenderit nihil.
+        required:
+            - message
+            - name
     FrontAddInventoryItemItemNotFoundResponseBody:
         title: FrontAddInventoryItemItemNotFoundResponseBody
         type: object
@@ -436,6 +482,19 @@ definitions:
         required:
             - message
             - name
+    FrontAddInventoryItemRequestBody:
+        title: FrontAddInventoryItemRequestBody
+        type: object
+        properties:
+            count:
+                type: integer
+                description: item's count
+                example: 4008115152
+                format: int32
+        example:
+            count: 545175868
+        required:
+            - count
     FrontCreateCharacterCharacterAlreadyExistsResponseBody:
         title: FrontCreateCharacterCharacterAlreadyExistsResponseBody
         type: object
@@ -443,15 +502,15 @@ definitions:
             message:
                 type: string
                 description: character already exists
-                example: Fugiat suscipit et molestiae itaque aut.
+                example: Aspernatur ullam aut autem enim laboriosam perferendis.
             name:
                 type: string
                 description: character name
-                example: Aspernatur ullam aut autem enim laboriosam perferendis.
+                example: Incidunt ratione rerum occaecati.
         description: character already exists
         example:
-            message: Incidunt ratione rerum occaecati.
-            name: Assumenda voluptates quo.
+            message: Assumenda voluptates quo.
+            name: Illum delectus aut quisquam.
         required:
             - message
             - name
@@ -469,14 +528,14 @@ definitions:
                 type: integer
                 description: Amount of experience
                 default: 0
-                example: 2471470
+                example: 8253007
                 minimum: 0
                 maximum: 1e+07
             health:
                 type: integer
                 description: Current health
                 default: 100
-                example: 5111253
+                example: 30379
                 minimum: 0
                 maximum: 1e+07
             name:
@@ -486,8 +545,8 @@ definitions:
                 maxLength: 32
         example:
             description: Savior of Princess Zelda
-            experience: 9877087
-            health: 2753424
+            experience: 4061059
+            health: 8562432
             name: Link
         required:
             - name
@@ -505,14 +564,14 @@ definitions:
                 type: integer
                 description: Amount of experience
                 default: 0
-                example: 8539131
+                example: 1056551
                 minimum: 0
                 maximum: 1e+07
             health:
                 type: integer
                 description: Current health
                 default: 100
-                example: 9366921
+                example: 8016963
                 minimum: 0
                 maximum: 1e+07
             name:
@@ -522,8 +581,8 @@ definitions:
                 maxLength: 32
         example:
             description: Savior of Princess Zelda
-            experience: 1791682
-            health: 853967
+            experience: 3541357
+            health: 2297840
             name: Link
         required:
             - name
@@ -534,7 +593,7 @@ definitions:
             message:
                 type: string
                 description: item already exists
-                example: Et expedita sit voluptatibus dolorem tempore.
+                example: Amet et expedita sit voluptatibus dolorem tempore.
             name:
                 type: string
                 description: item name
@@ -598,7 +657,7 @@ definitions:
                 type: integer
                 description: Amount of damage
                 default: 0
-                example: 401243
+                example: 234557
                 minimum: 0
                 maximum: 1e+06
             description:
@@ -610,7 +669,7 @@ definitions:
                 type: integer
                 description: Amount of healing
                 default: 0
-                example: 266937
+                example: 401243
                 minimum: 0
                 maximum: 1e+06
             name:
@@ -622,15 +681,15 @@ definitions:
                 type: integer
                 description: Amount of protection
                 default: 0
-                example: 1142
+                example: 6937
                 minimum: 0
                 maximum: 10000
         example:
-            damage: 93218
+            damage: 381142
             description: Restores health
-            healing: 220634
+            healing: 93218
             name: Potion
-            protection: 6247
+            protection: 634
         required:
             - name
             - description
@@ -641,15 +700,15 @@ definitions:
             message:
                 type: string
                 description: character not found
-                example: Consectetur eveniet quisquam sunt et.
+                example: Reprehenderit qui.
             name:
                 type: string
                 description: character name
-                example: Qui sed consequuntur voluptatibus autem neque.
+                example: Consequuntur voluptatibus autem neque quidem facilis rerum.
         description: character not found
         example:
-            message: Facilis rerum natus veniam.
-            name: Sit vel.
+            message: Veniam praesentium sit vel dolorem ratione.
+            name: Non aut velit.
         required:
             - message
             - name
@@ -667,14 +726,14 @@ definitions:
                 type: integer
                 description: Amount of experience
                 default: 0
-                example: 30379
+                example: 1980566
                 minimum: 0
                 maximum: 1e+07
             health:
                 type: integer
                 description: Current health
                 default: 100
-                example: 9239259
+                example: 3261363
                 minimum: 0
                 maximum: 1e+07
             name:
@@ -684,8 +743,8 @@ definitions:
                 maxLength: 32
         example:
             description: Savior of Princess Zelda
-            experience: 8562432
-            health: 8253007
+            experience: 643492
+            health: 3324245
             name: Link
         required:
             - name
@@ -696,15 +755,15 @@ definitions:
             message:
                 type: string
                 description: character not found
-                example: Consequatur sint inventore reiciendis pariatur.
+                example: Magni eaque.
             name:
                 type: string
                 description: character name
-                example: Illum et neque id.
+                example: Unde officia soluta a ut.
         description: character not found
         example:
-            message: Delectus quia sint inventore voluptate omnis.
-            name: Voluptate ut consequuntur occaecati saepe.
+            message: Perferendis quae officiis aut quisquam consequatur sed.
+            name: Qui eius quisquam rerum quisquam.
         required:
             - message
             - name
@@ -778,18 +837,50 @@ definitions:
             message:
                 type: string
                 description: character not found
-                example: Omnis quis odit.
+                example: Aspernatur consequatur sint.
             name:
                 type: string
                 description: character name
-                example: Dolor molestias consequatur labore porro.
+                example: Reiciendis pariatur quidem illum et neque id.
         description: character not found
         example:
-            message: Ea ut asperiores qui suscipit reprehenderit quaerat.
-            name: Omnis vel laboriosam tempora voluptate reprehenderit nihil.
+            message: Delectus quia sint inventore voluptate omnis.
+            name: Voluptate ut consequuntur occaecati saepe.
         required:
             - message
             - name
+    FrontRemoveInventoryItemItemCountNotValidResponseBody:
+        title: FrontRemoveInventoryItemItemCountNotValidResponseBody
+        type: object
+        properties:
+            message:
+                type: string
+                description: item count not valid
+                example: Veniam aut.
+            name:
+                type: string
+                description: item name
+                example: Vel quia nobis assumenda et.
+        description: item count not valid
+        example:
+            message: Ipsum minima consequuntur.
+            name: A veritatis aut in sint eaque.
+        required:
+            - message
+            - name
+    FrontRemoveInventoryItemRequestBody:
+        title: FrontRemoveInventoryItemRequestBody
+        type: object
+        properties:
+            count:
+                type: integer
+                description: item's count
+                example: 1431357571
+                format: int32
+        example:
+            count: 1432672066
+        required:
+            - count
     FrontUpdateCharacterCharacterNotFoundResponseBody:
         title: FrontUpdateCharacterCharacterNotFoundResponseBody
         type: object
@@ -797,15 +888,15 @@ definitions:
             message:
                 type: string
                 description: character not found
-                example: Deserunt doloribus et sequi sed aut veritatis.
+                example: Veritatis numquam et porro.
             name:
                 type: string
                 description: character name
-                example: Et porro molestiae aperiam.
+                example: Aperiam distinctio natus.
         description: character not found
         example:
-            message: Natus repudiandae illum iste.
-            name: Vero temporibus amet sed aut ut.
+            message: Illum iste enim vero.
+            name: Amet sed aut.
         required:
             - message
             - name
@@ -823,20 +914,20 @@ definitions:
                 type: integer
                 description: Amount of experience
                 default: 0
-                example: 5681846
+                example: 3576248
                 minimum: 0
                 maximum: 1e+07
             health:
                 type: integer
                 description: Current health
                 default: 100
-                example: 3576248
+                example: 782878
                 minimum: 0
                 maximum: 1e+07
         example:
             description: Savior of Princess Zelda
-            experience: 5234557
-            health: 592343
+            experience: 592343
+            health: 5681846
     FrontUpdateCharacterResponseBody:
         title: FrontUpdateCharacterResponseBody
         type: object
@@ -851,14 +942,14 @@ definitions:
                 type: integer
                 description: Amount of experience
                 default: 0
-                example: 3141954
+                example: 113952
                 minimum: 0
                 maximum: 1e+07
             health:
                 type: integer
                 description: Current health
                 default: 100
-                example: 5101009
+                example: 803375
                 minimum: 0
                 maximum: 1e+07
             name:
@@ -868,8 +959,8 @@ definitions:
                 maxLength: 32
         example:
             description: Savior of Princess Zelda
-            experience: 2491019
-            health: 9236741
+            experience: 5079748
+            health: 1913475
             name: Link
         required:
             - name
@@ -973,6 +1064,26 @@ definitions:
         required:
             - name
             - description
+    InventoryEntryResponse:
+        title: InventoryEntryResponse
+        type: object
+        properties:
+            count:
+                type: integer
+                description: item count
+                example: 2336336116
+                format: int32
+            item:
+                type: string
+                description: item name
+                example: Iste et tempore.
+        description: A custom type to keep track of item name and its count
+        example:
+            count: 938102150
+            item: Et sapiente voluptatem sed voluptatem voluptatum veniam.
+        required:
+            - item
+            - count
     ItemResponse:
         title: ItemResponse
         type: object

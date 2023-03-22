@@ -66,6 +66,20 @@ type UpdateItemRequestBody struct {
 	Protection *uint32 `form:"protection,omitempty" json:"protection,omitempty" xml:"protection,omitempty"`
 }
 
+// AddInventoryItemRequestBody is the type of the "Front" service
+// "addInventoryItem" endpoint HTTP request body.
+type AddInventoryItemRequestBody struct {
+	// item's count
+	Count *uint32 `form:"count,omitempty" json:"count,omitempty" xml:"count,omitempty"`
+}
+
+// RemoveInventoryItemRequestBody is the type of the "Front" service
+// "removeInventoryItem" endpoint HTTP request body.
+type RemoveInventoryItemRequestBody struct {
+	// item's count
+	Count *uint32 `form:"count,omitempty" json:"count,omitempty" xml:"count,omitempty"`
+}
+
 // CreateCharacterResponseBody is the type of the "Front" service
 // "createCharacter" endpoint HTTP response body.
 type CreateCharacterResponseBody struct {
@@ -158,6 +172,10 @@ type UpdateItemResponseBody struct {
 	Protection uint32 `form:"protection" json:"protection" xml:"protection"`
 }
 
+// GetInventoryResponseBody is the type of the "Front" service "getInventory"
+// endpoint HTTP response body.
+type GetInventoryResponseBody []*InventoryEntryResponse
+
 // CreateCharacterCharacterAlreadyExistsResponseBody is the type of the "Front"
 // service "createCharacter" endpoint HTTP response body for the
 // "CharacterAlreadyExists" error.
@@ -233,6 +251,16 @@ type AddInventoryItemItemNotFoundResponseBody struct {
 	Name string `form:"name" json:"name" xml:"name"`
 }
 
+// AddInventoryItemItemCountNotValidResponseBody is the type of the "Front"
+// service "addInventoryItem" endpoint HTTP response body for the
+// "ItemCountNotValid" error.
+type AddInventoryItemItemCountNotValidResponseBody struct {
+	// item count not valid
+	Message string `form:"message" json:"message" xml:"message"`
+	// item name
+	Name string `form:"name" json:"name" xml:"name"`
+}
+
 // RemoveInventoryItemCharacterNotFoundResponseBody is the type of the "Front"
 // service "removeInventoryItem" endpoint HTTP response body for the
 // "CharacterNotFound" error.
@@ -240,6 +268,16 @@ type RemoveInventoryItemCharacterNotFoundResponseBody struct {
 	// character not found
 	Message string `form:"message" json:"message" xml:"message"`
 	// character name
+	Name string `form:"name" json:"name" xml:"name"`
+}
+
+// RemoveInventoryItemItemCountNotValidResponseBody is the type of the "Front"
+// service "removeInventoryItem" endpoint HTTP response body for the
+// "ItemCountNotValid" error.
+type RemoveInventoryItemItemCountNotValidResponseBody struct {
+	// item count not valid
+	Message string `form:"message" json:"message" xml:"message"`
+	// item name
 	Name string `form:"name" json:"name" xml:"name"`
 }
 
@@ -276,6 +314,14 @@ type ItemResponse struct {
 	Healing uint32 `form:"healing" json:"healing" xml:"healing"`
 	// Amount of protection
 	Protection uint32 `form:"protection" json:"protection" xml:"protection"`
+}
+
+// InventoryEntryResponse is used to define fields on response body types.
+type InventoryEntryResponse struct {
+	// item name
+	Item string `form:"item" json:"item" xml:"item"`
+	// item count
+	Count uint32 `form:"count" json:"count" xml:"count"`
 }
 
 // NewCreateCharacterResponseBody builds the HTTP response body from the result
@@ -481,6 +527,16 @@ func NewUpdateItemResponseBody(res *front.Item) *UpdateItemResponseBody {
 	return body
 }
 
+// NewGetInventoryResponseBody builds the HTTP response body from the result of
+// the "getInventory" endpoint of the "Front" service.
+func NewGetInventoryResponseBody(res []*front.InventoryEntry) GetInventoryResponseBody {
+	body := make([]*InventoryEntryResponse, len(res))
+	for i, val := range res {
+		body[i] = marshalFrontInventoryEntryToInventoryEntryResponse(val)
+	}
+	return body
+}
+
 // NewCreateCharacterCharacterAlreadyExistsResponseBody builds the HTTP
 // response body from the result of the "createCharacter" endpoint of the
 // "Front" service.
@@ -564,11 +620,33 @@ func NewAddInventoryItemItemNotFoundResponseBody(res *front.ItemNotFound) *AddIn
 	return body
 }
 
+// NewAddInventoryItemItemCountNotValidResponseBody builds the HTTP response
+// body from the result of the "addInventoryItem" endpoint of the "Front"
+// service.
+func NewAddInventoryItemItemCountNotValidResponseBody(res *front.ItemCountNotValid) *AddInventoryItemItemCountNotValidResponseBody {
+	body := &AddInventoryItemItemCountNotValidResponseBody{
+		Message: res.Message,
+		Name:    res.Name,
+	}
+	return body
+}
+
 // NewRemoveInventoryItemCharacterNotFoundResponseBody builds the HTTP response
 // body from the result of the "removeInventoryItem" endpoint of the "Front"
 // service.
 func NewRemoveInventoryItemCharacterNotFoundResponseBody(res *front.CharacterNotFound) *RemoveInventoryItemCharacterNotFoundResponseBody {
 	body := &RemoveInventoryItemCharacterNotFoundResponseBody{
+		Message: res.Message,
+		Name:    res.Name,
+	}
+	return body
+}
+
+// NewRemoveInventoryItemItemCountNotValidResponseBody builds the HTTP response
+// body from the result of the "removeInventoryItem" endpoint of the "Front"
+// service.
+func NewRemoveInventoryItemItemCountNotValidResponseBody(res *front.ItemCountNotValid) *RemoveInventoryItemItemCountNotValidResponseBody {
+	body := &RemoveInventoryItemItemCountNotValidResponseBody{
 		Message: res.Message,
 		Name:    res.Name,
 	}
@@ -731,8 +809,10 @@ func NewDeleteItemPayload(name string) *front.DeleteItemPayload {
 
 // NewAddInventoryItemPayload builds a Front service addInventoryItem endpoint
 // payload.
-func NewAddInventoryItemPayload(character string, item string) *front.AddInventoryItemPayload {
-	v := &front.AddInventoryItemPayload{}
+func NewAddInventoryItemPayload(body *AddInventoryItemRequestBody, character string, item string) *front.AddInventoryItemPayload {
+	v := &front.AddInventoryItemPayload{
+		Count: *body.Count,
+	}
 	v.Character = character
 	v.Item = item
 
@@ -741,8 +821,10 @@ func NewAddInventoryItemPayload(character string, item string) *front.AddInvento
 
 // NewRemoveInventoryItemPayload builds a Front service removeInventoryItem
 // endpoint payload.
-func NewRemoveInventoryItemPayload(character string, item string) *front.RemoveInventoryItemPayload {
-	v := &front.RemoveInventoryItemPayload{}
+func NewRemoveInventoryItemPayload(body *RemoveInventoryItemRequestBody, character string, item string) *front.RemoveInventoryItemPayload {
+	v := &front.RemoveInventoryItemPayload{
+		Count: *body.Count,
+	}
 	v.Character = character
 	v.Item = item
 
@@ -919,6 +1001,24 @@ func ValidateUpdateItemRequestBody(body *UpdateItemRequestBody) (err error) {
 		if *body.Protection > 10000 {
 			err = goa.MergeErrors(err, goa.InvalidRangeError("body.protection", *body.Protection, 10000, false))
 		}
+	}
+	return
+}
+
+// ValidateAddInventoryItemRequestBody runs the validations defined on
+// AddInventoryItemRequestBody
+func ValidateAddInventoryItemRequestBody(body *AddInventoryItemRequestBody) (err error) {
+	if body.Count == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("count", "body"))
+	}
+	return
+}
+
+// ValidateRemoveInventoryItemRequestBody runs the validations defined on
+// RemoveInventoryItemRequestBody
+func ValidateRemoveInventoryItemRequestBody(body *RemoveInventoryItemRequestBody) (err error) {
+	if body.Count == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("count", "body"))
 	}
 	return
 }

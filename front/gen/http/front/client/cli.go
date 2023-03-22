@@ -24,7 +24,7 @@ func BuildCreateCharacterPayload(frontCreateCharacterBody string) (*front.Charac
 	{
 		err = json.Unmarshal([]byte(frontCreateCharacterBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"description\": \"Savior of Princess Zelda\",\n      \"experience\": 3453331,\n      \"health\": 6413167,\n      \"name\": \"Link\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"description\": \"Savior of Princess Zelda\",\n      \"experience\": 7974469,\n      \"health\": 5252954,\n      \"name\": \"Link\"\n   }'")
 		}
 		if utf8.RuneCountInString(body.Name) > 32 {
 			err = goa.MergeErrors(err, goa.InvalidLengthError("body.name", body.Name, utf8.RuneCountInString(body.Name), 32, false))
@@ -97,7 +97,7 @@ func BuildUpdateCharacterPayload(frontUpdateCharacterBody string, frontUpdateCha
 	{
 		err = json.Unmarshal([]byte(frontUpdateCharacterBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"description\": \"Savior of Princess Zelda\",\n      \"experience\": 1616326,\n      \"health\": 1962451\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"description\": \"Savior of Princess Zelda\",\n      \"experience\": 2029508,\n      \"health\": 1800536\n   }'")
 		}
 		if utf8.RuneCountInString(body.Description) > 128 {
 			err = goa.MergeErrors(err, goa.InvalidLengthError("body.description", body.Description, utf8.RuneCountInString(body.Description), 128, false))
@@ -177,7 +177,7 @@ func BuildCreateItemPayload(frontCreateItemBody string) (*front.Item, error) {
 	{
 		err = json.Unmarshal([]byte(frontCreateItemBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"damage\": 308475,\n      \"description\": \"Restores health\",\n      \"healing\": 363332,\n      \"name\": \"Potion\",\n      \"protection\": 6450\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"damage\": 344029,\n      \"description\": \"Restores health\",\n      \"healing\": 49233,\n      \"name\": \"Potion\",\n      \"protection\": 6286\n   }'")
 		}
 		if utf8.RuneCountInString(body.Name) > 32 {
 			err = goa.MergeErrors(err, goa.InvalidLengthError("body.name", body.Name, utf8.RuneCountInString(body.Name), 32, false))
@@ -338,7 +338,15 @@ func BuildDeleteItemPayload(frontDeleteItemName string) (*front.DeleteItemPayloa
 
 // BuildAddInventoryItemPayload builds the payload for the Front
 // addInventoryItem endpoint from CLI flags.
-func BuildAddInventoryItemPayload(frontAddInventoryItemCharacter string, frontAddInventoryItemItem string) (*front.AddInventoryItemPayload, error) {
+func BuildAddInventoryItemPayload(frontAddInventoryItemBody string, frontAddInventoryItemCharacter string, frontAddInventoryItemItem string) (*front.AddInventoryItemPayload, error) {
+	var err error
+	var body AddInventoryItemRequestBody
+	{
+		err = json.Unmarshal([]byte(frontAddInventoryItemBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"count\": 1357457099\n   }'")
+		}
+	}
 	var character string
 	{
 		character = frontAddInventoryItemCharacter
@@ -347,7 +355,9 @@ func BuildAddInventoryItemPayload(frontAddInventoryItemCharacter string, frontAd
 	{
 		item = frontAddInventoryItemItem
 	}
-	v := &front.AddInventoryItemPayload{}
+	v := &front.AddInventoryItemPayload{
+		Count: body.Count,
+	}
 	v.Character = character
 	v.Item = item
 
@@ -356,7 +366,15 @@ func BuildAddInventoryItemPayload(frontAddInventoryItemCharacter string, frontAd
 
 // BuildRemoveInventoryItemPayload builds the payload for the Front
 // removeInventoryItem endpoint from CLI flags.
-func BuildRemoveInventoryItemPayload(frontRemoveInventoryItemCharacter string, frontRemoveInventoryItemItem string) (*front.RemoveInventoryItemPayload, error) {
+func BuildRemoveInventoryItemPayload(frontRemoveInventoryItemBody string, frontRemoveInventoryItemCharacter string, frontRemoveInventoryItemItem string) (*front.RemoveInventoryItemPayload, error) {
+	var err error
+	var body RemoveInventoryItemRequestBody
+	{
+		err = json.Unmarshal([]byte(frontRemoveInventoryItemBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"count\": 2451514394\n   }'")
+		}
+	}
 	var character string
 	{
 		character = frontRemoveInventoryItemCharacter
@@ -365,7 +383,9 @@ func BuildRemoveInventoryItemPayload(frontRemoveInventoryItemCharacter string, f
 	{
 		item = frontRemoveInventoryItemItem
 	}
-	v := &front.RemoveInventoryItemPayload{}
+	v := &front.RemoveInventoryItemPayload{
+		Count: body.Count,
+	}
 	v.Character = character
 	v.Item = item
 

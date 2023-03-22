@@ -55,6 +55,7 @@ func NewClient(createCharacter, getCharacter, listCharacters, updateCharacter, d
 //   - "CharacterNotFound" (type *CharacterNotFound): character not found
 //   - "ItemAlreadyExists" (type *ItemAlreadyExists): item already exists
 //   - "ItemNotFound" (type *ItemNotFound): item not found
+//   - "ItemCountNotValid" (type *ItemCountNotValid): item count not valid
 //   - error: internal error
 func (c *Client) CreateCharacter(ctx context.Context, p *Character) (res *Character, err error) {
 	var ires interface{}
@@ -71,6 +72,7 @@ func (c *Client) CreateCharacter(ctx context.Context, p *Character) (res *Charac
 //   - "CharacterNotFound" (type *CharacterNotFound): character not found
 //   - "ItemAlreadyExists" (type *ItemAlreadyExists): item already exists
 //   - "ItemNotFound" (type *ItemNotFound): item not found
+//   - "ItemCountNotValid" (type *ItemCountNotValid): item count not valid
 //   - error: internal error
 func (c *Client) GetCharacter(ctx context.Context, p *GetCharacterPayload) (res *Character, err error) {
 	var ires interface{}
@@ -87,6 +89,7 @@ func (c *Client) GetCharacter(ctx context.Context, p *GetCharacterPayload) (res 
 //   - "CharacterNotFound" (type *CharacterNotFound): character not found
 //   - "ItemAlreadyExists" (type *ItemAlreadyExists): item already exists
 //   - "ItemNotFound" (type *ItemNotFound): item not found
+//   - "ItemCountNotValid" (type *ItemCountNotValid): item count not valid
 //   - error: internal error
 func (c *Client) ListCharacters(ctx context.Context) (res []*Character, err error) {
 	var ires interface{}
@@ -103,6 +106,7 @@ func (c *Client) ListCharacters(ctx context.Context) (res []*Character, err erro
 //   - "CharacterNotFound" (type *CharacterNotFound): character not found
 //   - "ItemAlreadyExists" (type *ItemAlreadyExists): item already exists
 //   - "ItemNotFound" (type *ItemNotFound): item not found
+//   - "ItemCountNotValid" (type *ItemCountNotValid): item count not valid
 //   - error: internal error
 func (c *Client) UpdateCharacter(ctx context.Context, p *Character) (res *Character, err error) {
 	var ires interface{}
@@ -119,6 +123,7 @@ func (c *Client) UpdateCharacter(ctx context.Context, p *Character) (res *Charac
 //   - "CharacterNotFound" (type *CharacterNotFound): character not found
 //   - "ItemAlreadyExists" (type *ItemAlreadyExists): item already exists
 //   - "ItemNotFound" (type *ItemNotFound): item not found
+//   - "ItemCountNotValid" (type *ItemCountNotValid): item count not valid
 //   - error: internal error
 func (c *Client) DeleteCharacter(ctx context.Context, p *DeleteCharacterPayload) (err error) {
 	_, err = c.DeleteCharacterEndpoint(ctx, p)
@@ -131,6 +136,7 @@ func (c *Client) DeleteCharacter(ctx context.Context, p *DeleteCharacterPayload)
 //   - "CharacterNotFound" (type *CharacterNotFound): character not found
 //   - "ItemAlreadyExists" (type *ItemAlreadyExists): item already exists
 //   - "ItemNotFound" (type *ItemNotFound): item not found
+//   - "ItemCountNotValid" (type *ItemCountNotValid): item count not valid
 //   - error: internal error
 func (c *Client) CreateItem(ctx context.Context, p *Item) (res *Item, err error) {
 	var ires interface{}
@@ -147,6 +153,7 @@ func (c *Client) CreateItem(ctx context.Context, p *Item) (res *Item, err error)
 //   - "CharacterNotFound" (type *CharacterNotFound): character not found
 //   - "ItemAlreadyExists" (type *ItemAlreadyExists): item already exists
 //   - "ItemNotFound" (type *ItemNotFound): item not found
+//   - "ItemCountNotValid" (type *ItemCountNotValid): item count not valid
 //   - error: internal error
 func (c *Client) GetItem(ctx context.Context, p *GetItemPayload) (res *Item, err error) {
 	var ires interface{}
@@ -163,6 +170,7 @@ func (c *Client) GetItem(ctx context.Context, p *GetItemPayload) (res *Item, err
 //   - "CharacterNotFound" (type *CharacterNotFound): character not found
 //   - "ItemAlreadyExists" (type *ItemAlreadyExists): item already exists
 //   - "ItemNotFound" (type *ItemNotFound): item not found
+//   - "ItemCountNotValid" (type *ItemCountNotValid): item count not valid
 //   - error: internal error
 func (c *Client) ListItems(ctx context.Context) (res []*Item, err error) {
 	var ires interface{}
@@ -179,6 +187,7 @@ func (c *Client) ListItems(ctx context.Context) (res []*Item, err error) {
 //   - "CharacterAlreadyExists" (type *CharacterAlreadyExists): character already exists
 //   - "CharacterNotFound" (type *CharacterNotFound): character not found
 //   - "ItemAlreadyExists" (type *ItemAlreadyExists): item already exists
+//   - "ItemCountNotValid" (type *ItemCountNotValid): item count not valid
 //   - error: internal error
 func (c *Client) UpdateItem(ctx context.Context, p *Item) (res *Item, err error) {
 	var ires interface{}
@@ -195,6 +204,7 @@ func (c *Client) UpdateItem(ctx context.Context, p *Item) (res *Item, err error)
 //   - "CharacterNotFound" (type *CharacterNotFound): character not found
 //   - "ItemAlreadyExists" (type *ItemAlreadyExists): item already exists
 //   - "ItemNotFound" (type *ItemNotFound): item not found
+//   - "ItemCountNotValid" (type *ItemCountNotValid): item count not valid
 //   - error: internal error
 func (c *Client) DeleteItem(ctx context.Context, p *DeleteItemPayload) (err error) {
 	_, err = c.DeleteItemEndpoint(ctx, p)
@@ -208,6 +218,7 @@ func (c *Client) DeleteItem(ctx context.Context, p *DeleteItemPayload) (err erro
 //   - "CharacterNotFound" (type *CharacterNotFound): character not found
 //   - "ItemAlreadyExists" (type *ItemAlreadyExists): item already exists
 //   - "ItemNotFound" (type *ItemNotFound): item not found
+//   - "ItemCountNotValid" (type *ItemCountNotValid): item count not valid
 //   - error: internal error
 func (c *Client) AddInventoryItem(ctx context.Context, p *AddInventoryItemPayload) (err error) {
 	_, err = c.AddInventoryItemEndpoint(ctx, p)
@@ -221,6 +232,7 @@ func (c *Client) AddInventoryItem(ctx context.Context, p *AddInventoryItemPayloa
 //   - "CharacterNotFound" (type *CharacterNotFound): character not found
 //   - "ItemAlreadyExists" (type *ItemAlreadyExists): item already exists
 //   - "ItemNotFound" (type *ItemNotFound): item not found
+//   - "ItemCountNotValid" (type *ItemCountNotValid): item count not valid
 //   - error: internal error
 func (c *Client) RemoveInventoryItem(ctx context.Context, p *RemoveInventoryItemPayload) (err error) {
 	_, err = c.RemoveInventoryItemEndpoint(ctx, p)
@@ -233,12 +245,13 @@ func (c *Client) RemoveInventoryItem(ctx context.Context, p *RemoveInventoryItem
 //   - "CharacterNotFound" (type *CharacterNotFound): character not found
 //   - "ItemAlreadyExists" (type *ItemAlreadyExists): item already exists
 //   - "ItemNotFound" (type *ItemNotFound): item not found
+//   - "ItemCountNotValid" (type *ItemCountNotValid): item count not valid
 //   - error: internal error
-func (c *Client) GetInventory(ctx context.Context, p *GetInventoryPayload) (res []string, err error) {
+func (c *Client) GetInventory(ctx context.Context, p *GetInventoryPayload) (res []*InventoryEntry, err error) {
 	var ires interface{}
 	ires, err = c.GetInventoryEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
-	return ires.([]string), nil
+	return ires.([]*InventoryEntry), nil
 }

@@ -28,8 +28,9 @@ func UsageCommands() string {
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
 	return os.Args[0] + ` inventory add-item --message '{
-      "character": "Rerum reprehenderit.",
-      "item": "Corporis saepe voluptatem praesentium sed."
+      "character": "Laborum sed dolores corporis.",
+      "count": 3513363385,
+      "item": "Eum cum officia aut velit dolorum explicabo."
    }'` + "\n" +
 		""
 }
@@ -165,8 +166,9 @@ Add an item to a character's inventory
 
 Example:
     %[1]s inventory add-item --message '{
-      "character": "Rerum reprehenderit.",
-      "item": "Corporis saepe voluptatem praesentium sed."
+      "character": "Laborum sed dolores corporis.",
+      "count": 3513363385,
+      "item": "Eum cum officia aut velit dolorum explicabo."
    }'
 `, os.Args[0])
 }
@@ -179,8 +181,9 @@ Remove an item from a character's inventory
 
 Example:
     %[1]s inventory remove-item --message '{
-      "character": "Alias omnis esse exercitationem molestiae voluptatem rerum.",
-      "item": "Et et id est ea aut voluptate."
+      "character": "Recusandae quis.",
+      "count": 155887092,
+      "item": "Alias omnis esse exercitationem molestiae voluptatem rerum."
    }'
 `, os.Args[0])
 }
@@ -193,7 +196,7 @@ Get a character's inventory
 
 Example:
     %[1]s inventory get-inventory --message '{
-      "character": "Architecto sequi laudantium et fuga assumenda omnis."
+      "character": "Consequuntur et porro sit."
    }'
 `, os.Args[0])
 }
